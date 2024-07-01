@@ -26,7 +26,7 @@ namespace MovtechProject.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Forms>> GetFormsById(int id)
         {
-            Forms forms = await  _formsService.GetFormularioByIdAsync(id);
+            Forms forms = await _formsService.GetFormularioByIdAsync(id);
             if(forms == null)
             {
                 return NotFound();
@@ -35,10 +35,12 @@ namespace MovtechProject.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<FormsGroup>> CreateFormsGroup(Forms forms)
+        public async Task<ActionResult<Forms>> CreateForms(Forms forms)
         {
-           Forms createdForms = await _formsService.CreateFormsAsync(forms);
-            return CreatedAtAction(nameof(GetFormsById), new { id = createdForms.Id }, createdForms);
+           int insertedId = await _formsService.CreateFormsAsync(forms);
+           forms.Id = insertedId;
+
+            return Ok(forms);
         }
 
         [HttpPut("{id}")]

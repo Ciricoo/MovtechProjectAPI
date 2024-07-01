@@ -52,7 +52,7 @@ namespace MovtechProject.Services
 
         public async Task<Forms> GetFormularioByIdAsync(int id)
         {
-            Forms Forms = null;
+            Forms? Forms = null;
             try
             {
                 using (SqlConnection connection = _database.GetConnection())
@@ -80,12 +80,10 @@ namespace MovtechProject.Services
                 Console.WriteLine("Erro não esperado ao obter formulário por ID:", ex.Message);
                 throw;
             }
-
-
             return Forms;
         }
 
-        public async Task<Forms> CreateFormsAsync(Forms forms)
+        public async Task<int> CreateFormsAsync(Forms forms)
         {
             try
             {
@@ -97,9 +95,7 @@ namespace MovtechProject.Services
                     command.Parameters.AddWithValue("@idGrupoFormulario", forms.IdFormsGroup);
 
                     var insertedId = await command.ExecuteScalarAsync();
-                    forms.Id = Convert.ToInt32(insertedId);
-
-                    return forms;
+                    return Convert.ToInt32(insertedId);
 
                 }
             }
@@ -144,8 +140,8 @@ namespace MovtechProject.Services
                     SqlCommand command = new SqlCommand("DELETE FROM formulario WHERE @id = id", connection);
                     command.Parameters.AddWithValue("@id", id);
 
-                    int rowsAffected = await command.ExecuteNonQueryAsync();
-                    return rowsAffected > 0;
+                    int rowAffected = await command.ExecuteNonQueryAsync();
+                    return rowAffected > 0;
                 }
             }catch (Exception ex)
             {

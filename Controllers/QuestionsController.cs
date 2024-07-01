@@ -31,5 +31,36 @@ namespace MovtechProject.Controllers
             }
             return Ok(questions);
         }
+
+        [HttpPost]
+        public async Task<ActionResult<Questions>> CreateQuestions(Questions questions)
+        {
+            int insertedId = await _questionsService.CreateQuestionsAsync(questions);
+            questions.Id = insertedId;
+
+            return Ok(questions);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Questions>> UpdateQuestions(int id, Questions questions)
+        {
+            bool updated = await _questionsService.UpdateQuestionsAsync(id, questions);
+            if(!updated)
+            {
+                return NotFound();
+            }
+            return Ok(questions);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Questions>> DeleteQuestions(int id)
+        {
+            bool deleted = await _questionsService.DeleteQuestionsAsync(id);
+            if (!deleted)
+            {
+                return NotFound();
+            }
+            return Ok(deleted);
+        }
     }
 }

@@ -7,6 +7,6 @@
         public int IdFormsGroup { get; set; }
 
         //Usado para indicar que Formulario possui uma coleção de Perguntas 
-        public ICollection<Questions> Perguntas { get; set;}
+        public ICollection<Questions>? Perguntas { get; set;}
     }
 }

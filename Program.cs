@@ -16,6 +16,8 @@ builder.Services.AddSingleton(new Database(connectionString));
 builder.Services.AddScoped<FormsGroupService>();
 builder.Services.AddScoped<FormsService>();
 builder.Services.AddScoped<QuestionsService>();
+builder.Services.AddScoped<AnswerService>();
+builder.Services.AddScoped<UserService>();
 
 var app = builder.Build();
 

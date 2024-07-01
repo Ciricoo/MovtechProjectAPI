@@ -1,5 +1,6 @@
 ﻿using MovtechProject.Data;
 using MovtechProject.Models;
+using System.Data;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 
@@ -33,7 +34,7 @@ namespace MovtechProject.Services
                             {
                                 Id = (int)reader["id"],
                                 Name = reader["nome"].ToString(),
-                                
+
                             });
                         }
                     }
@@ -50,8 +51,7 @@ namespace MovtechProject.Services
 
         public async Task<FormsGroup> GetFormsGroupByIdAsync(int id)
         {
-            FormsGroup formsGroup = null;
-
+            FormsGroup? formsGroup = null;
             try
             {
                 using (SqlConnection connection = _database.GetConnection())
