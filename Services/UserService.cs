@@ -2,6 +2,7 @@
 using MovtechProject.Data;
 using MovtechProject.Models;
 using MovtechProject.Models.Enums;
+using MovtechProject.Repositories;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -9,70 +10,32 @@ namespace MovtechProject.Services
 {
     public class UserService
     {
-        private readonly Database _database;
-        public UserService(Database database)
+        private readonly UserRepository _userRepository;
+        public UserService(UserRepository userRepository)
         {
-            _database = database ?? throw new ArgumentNullException(nameof(database));
+            _userRepository = userRepository;
         }
 
         public async Task<List<Users>> GetUsersAsync()
         {
-            List<Users> Users = new List<Users>();
-            try
-            {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("SELECT * FROM usuarios", connection);
+            var lista = _userRepository.GetUsersAsync();
 
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            Users.Add(new Users
-                            {
-                                Id = (int)reader["id"],
-                                Name = reader.GetString("nome"),
-                                Password = reader.GetString("senha"),
-                                Type = Enum.Parse < UserEnumType >(reader.GetString("tipo"))
-
-                            });
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
+            if (lista == null)
             {
-                Console.WriteLine("Erro não esperado ao obter formulários: ", ex.Message);
-                throw;
+                throw new ArgumentException("Não existe nenhum usuário!");
             }
 
-
-            return Users;
+            return await _userRepository.GetUsersAsync();
         }
 
-        public async Task<int> CreateUsersAsync(Users users)
+        public async Task<Users> CreateUsersAsync(Users users)
         {
-            try
+            if (string.IsNullOrWhiteSpace(users.Name) || string.IsNullOrWhiteSpace(users.Password))
             {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("INSERT INTO usuarios (nome, senha, tipo) VALUES (@nome, @senha, @tipo); SELECT SCOPE_IDENTITY();", connection);
-                    command.Parameters.AddWithValue("@nome", users.Name);
-                    command.Parameters.AddWithValue("@senha", users.Password);
-                    command.Parameters.AddWithValue("@tipo", users.Type);
-
-                    var insertedId = await command.ExecuteScalarAsync();
-                    return Convert.ToInt32(insertedId);
-
-                }
+                throw new ArgumentException("Usuario ou senha não podem ser vazios!");
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Erro não esperado ao criar formulário:", ex.Message);
-                throw;
-            }
+
+            return await _userRepository.CreateUsersAsync(users);   
         }
     }
 }

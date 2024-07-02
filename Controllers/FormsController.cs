@@ -13,44 +13,38 @@ namespace MovtechProject.Controllers
 
         public FormsController(FormsService formsService)
         {
-            _formsService = formsService ?? throw new ArgumentNullException(nameof(formsService));
+            _formsService = formsService;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<Forms>>> GetForms()
         {
-            List<Forms> forms = await _formsService.GetFormsAsync();
-            return Ok(forms);    
+            List<Forms> get = await _formsService.GetFormsAsync();
+
+            return Ok(get);    
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Forms>> GetFormsById(int id)
         {
-            Forms forms = await _formsService.GetFormularioByIdAsync(id);
-            if(forms == null)
-            {
-                return NotFound();
-            }
-            return Ok(forms);
+            Forms getId = await _formsService.GetFormsByIdAsync(id);
+
+            return Ok(getId);
         }
 
         [HttpPost]
         public async Task<ActionResult<Forms>> CreateForms(Forms forms)
         {
-           int insertedId = await _formsService.CreateFormsAsync(forms);
-           forms.Id = insertedId;
+           Forms created = await _formsService.CreateFormsAsync(forms);
 
-            return Ok(forms);
+            return Ok(created);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateForms(int id, Forms form)
         {
             bool updated = await _formsService.UpdateFormsAsync(id, form);
-            if (!updated)
-            {
-                return NotFound();
-            }
+
             return Ok(updated);
         }
 
@@ -58,10 +52,7 @@ namespace MovtechProject.Controllers
         public async Task<ActionResult> DeleteForms(int id)
         {
             bool deleted = await _formsService.DeleteFormsAsync(id);
-            if (!deleted)
-            {
-                return NotFound();
-            }
+
             return Ok(deleted);
         }
     }

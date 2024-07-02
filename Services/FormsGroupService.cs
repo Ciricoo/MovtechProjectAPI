@@ -1,5 +1,6 @@
 ﻿using MovtechProject.Data;
 using MovtechProject.Models;
+using MovtechProject.Repositories;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
@@ -8,141 +9,90 @@ namespace MovtechProject.Services
 {
     public class FormsGroupService
     {
-        private readonly Database _database;
+        private readonly FormsGroupRepository _formsGroupRepository;
 
-        public FormsGroupService(Database database)
+        public FormsGroupService(FormsGroupRepository formsGroupRepository)
         {
-            _database = database ?? throw new ArgumentNullException(nameof(database));
+            _formsGroupRepository = formsGroupRepository;
         }
 
         public async Task<List<FormsGroup>> GetFormsGroupsAsync()
         {
-            List<FormsGroup> formsGroup = new List<FormsGroup>();
+            var lista = _formsGroupRepository.GetFormsGroupsAsync();
 
-            try
+            if(lista == null)
             {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("SELECT * FROM grupoFormulario", connection);
-
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            formsGroup.Add(new FormsGroup
-                            {
-                                Id = (int)reader["id"],
-                                Name = reader["nome"].ToString(),
-
-                            });
-                        }
-                    }
-                }
+                throw new ArgumentException("Não existe grupo de formulários!");
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Erro não esperado ao obter grupo de formulários: ", ex.Message);
-                throw;
-            }
-            
-            return formsGroup;
+
+            return await _formsGroupRepository.GetFormsGroupsAsync();
         }
 
         public async Task<FormsGroup> GetFormsGroupByIdAsync(int id)
         {
-            FormsGroup? formsGroup = null;
-            try
+            if (id <= 0)
             {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("SELECT * FROM grupoFormulario WHERE id = @id", connection);
-                    command.Parameters.AddWithValue("@id", id);
-
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
-                    {
-                        if (await reader.ReadAsync())
-                        {
-                            formsGroup = new FormsGroup
-                            {
-                                Id = (int)reader["id"],
-                                Name = reader["nome"].ToString()
-                            };
-                        }
-                    }
-                }
-            }catch  (Exception ex)
-            {
-                Console.WriteLine("Erro não esperado ao obter o grupo de formulário por ID:", ex.Message);
-                throw;
+                throw new ArgumentException("ID inválido!");
             }
-            
-            return formsGroup;
+
+            FormsGroup formsGroup = await _formsGroupRepository.GetFormsGroupByIdAsync(id);
+
+            if (formsGroup == null)
+            {
+                throw new ArgumentException("Id não encontrado!");
+            }
+
+            return await _formsGroupRepository.GetFormsGroupByIdAsync(id);
         }
 
-        public async Task<int> CreateFormsGroupAsync(FormsGroup formsGroup)
+        public async Task<FormsGroup> CreateFormsGroupAsync(FormsGroup formsGroup)
         {
-            try
+            if (string.IsNullOrWhiteSpace(formsGroup.Name) || formsGroup.Name.Length > 100)
             {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("INSERT INTO grupoFormulario (nome) VALUES (@nome); SELECT SCOPE_IDENTITY();", connection);
-                    command.Parameters.AddWithValue("@nome", formsGroup.Name);
-
-                    var insertedId = await command.ExecuteScalarAsync();
-                    return Convert.ToInt32(insertedId);
-                }
-            } catch (Exception ex)
-            {
-                Console.WriteLine("Erro não esperado ao criar o grupo de formulários:", ex.Message);
-                throw;
+                throw new ArgumentException("O nome do grupo é inválido!");
             }
-            
+
+            return await _formsGroupRepository.CreateFormsGroupAsync(formsGroup);
+
         }
 
-       public async Task<bool> UpdateFormsGroupAsync(int id, FormsGroup formsGroup)
+        public async Task<bool> UpdateFormsGroupAsync(int id, FormsGroup formsGroup)
         {
-            try
+            if (id <= 0)
             {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("UPDATE grupoFormulario SET nome = @nome WHERE id = @id", connection);
-                    command.Parameters.AddWithValue("@id", id);
-                    command.Parameters.AddWithValue("@nome", formsGroup.Name);
-
-                    int rowsAffected = await command.ExecuteNonQueryAsync();
-                    return rowsAffected > 0;
-                }
-            }catch (Exception ex)
-            {
-                Console.WriteLine("Erro não esperado ao atualizar o grupo de formulários:", ex.Message);
-                throw;
+                throw new ArgumentException("ID inválido!");
             }
-            
+
+            FormsGroup existingGroup = await _formsGroupRepository.GetFormsGroupByIdAsync(id);
+
+            if (existingGroup == null)
+            {
+                throw new InvalidOperationException($"Grupo de formulário com ID {id} não encontrado!");
+            }
+
+            if (string.IsNullOrWhiteSpace(formsGroup.Name) || formsGroup.Name.Length > 100)
+            {
+                throw new ArgumentException("O nome do grupo de formulários é inválido!");
+            }
+
+            return await _formsGroupRepository.UpdateFormsGroupAsync(id, formsGroup);
         }
 
         public async Task<bool> DeleteFormsGroupAsync(int id)
         {
-            try
+            if (id <= 0)
             {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("DELETE FROM grupoFormulario WHERE id = @id", connection);
-                    command.Parameters.AddWithValue("@id", id);
-
-                    int rowsAffected = await command.ExecuteNonQueryAsync();
-                    return rowsAffected > 0;
-                }
-            }catch(Exception ex)
-            {
-                Console.WriteLine("Erro não esperado ao excluir grupo de formulários:", ex.Message);
-                throw;
+                throw new ArgumentException("ID inválido!");
             }
-            
+
+            FormsGroup existingGroup = await _formsGroupRepository.GetFormsGroupByIdAsync(id);
+
+            if (existingGroup == null)
+            {
+                throw new InvalidOperationException($"Grupo de formulário com ID {id} não encontrado!");
+            }
+
+            return await _formsGroupRepository.DeleteFormsGroupAsync(id);
         }
     }
 }

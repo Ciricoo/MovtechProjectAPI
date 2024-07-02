@@ -10,45 +10,40 @@ namespace MovtechProject.Controllers
     public class QuestionsController : ControllerBase
     {
         private readonly QuestionsService _questionsService;
-        public QuestionsController(QuestionsService questionsService) {
+        public QuestionsController(QuestionsService questionsService)
+        {
             _questionsService = questionsService;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<Questions>>> GetQuestions()
         {
-            List<Questions> questions = await _questionsService.GetQuestionsAsync();
-            return Ok(questions);
+            List<Questions> get = await _questionsService.GetQuestionsAsync();
+
+            return Ok(get);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Questions>> GetQuestionsById(int id)
         {
-            Questions questions = await _questionsService.GetQuestionsByIdAsync(id);
-            if(questions == null)
-            {
-                return NotFound();
-            }
-            return Ok(questions);
+            Questions getId = await _questionsService.GetQuestionsByIdAsync(id);
+
+            return Ok(getId);
         }
 
         [HttpPost]
         public async Task<ActionResult<Questions>> CreateQuestions(Questions questions)
         {
-            int insertedId = await _questionsService.CreateQuestionsAsync(questions);
-            questions.Id = insertedId;
+            Questions created = await _questionsService.CreateQuestionsAsync(questions);
 
-            return Ok(questions);
+            return Ok(created);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<Questions>> UpdateQuestions(int id, Questions questions)
         {
             bool updated = await _questionsService.UpdateQuestionsAsync(id, questions);
-            if(!updated)
-            {
-                return NotFound();
-            }
+
             return Ok(questions);
         }
 
@@ -56,10 +51,7 @@ namespace MovtechProject.Controllers
         public async Task<ActionResult<Questions>> DeleteQuestions(int id)
         {
             bool deleted = await _questionsService.DeleteQuestionsAsync(id);
-            if (!deleted)
-            {
-                return NotFound();
-            }
+
             return Ok(deleted);
         }
     }

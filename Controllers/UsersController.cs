@@ -13,7 +13,7 @@ namespace MovtechProject.Controllers
 
         public UsersController(UserService userService)
         {
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _userService = userService;
         }
 
         [HttpGet]
@@ -26,10 +26,9 @@ namespace MovtechProject.Controllers
         [HttpPost]
         public async Task<ActionResult<Users>> CreateUsers(Users users)
         {
-            int insertedId = await _userService.CreateUsersAsync(users);
-            users.Id = insertedId;
+            Users created = await _userService.CreateUsersAsync(users);
 
-            return Ok(users);
+            return Ok(created);
         }
 
     }

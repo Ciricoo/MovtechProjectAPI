@@ -1,5 +1,7 @@
 ﻿using MovtechProject.Data;
 using MovtechProject.Models;
+using MovtechProject.Repositories;
+using System.Data;
 using System.Data.SqlClient;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -7,147 +9,90 @@ namespace MovtechProject.Services
 {
     public class FormsService
     {
-        private readonly Database _database;
+        private readonly FormsRepository _formsRepository;
 
-        public FormsService(Database database)
+        public FormsService(FormsRepository formsRepository)
         {
-            _database = database ?? throw new ArgumentNullException(nameof(database));
+            _formsRepository = formsRepository;
         }
 
 
         public async Task<List<Forms>> GetFormsAsync()
         {
-            List<Forms> Forms = new List<Forms>();
+            var lista = _formsRepository.GetFormsAsync();
 
-            try
+            if (lista == null)
             {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("SELECT * FROM formulario", connection);
-
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            Forms.Add(new Forms
-                            {
-                                Id = (int)reader["id"],
-                                Name = reader["nome"].ToString(),
-                                IdFormsGroup = (int)reader["idGrupoFormulario"]
-                            });
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Erro não esperado ao obter formulários: ", ex.Message);
-                throw;
+                throw new ArgumentException("Não existe nenhum formulário!");
             }
 
-
-            return Forms;
+            return await _formsRepository.GetFormsAsync();
         }
 
-        public async Task<Forms> GetFormularioByIdAsync(int id)
+        public async Task<Forms> GetFormsByIdAsync(int id)
         {
-            Forms? Forms = null;
-            try
+            if (id <= 0)
             {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("SELECT * FROM formulario WHERE id = @id", connection);
-                    command.Parameters.AddWithValue("@id", id);
+                throw new ArgumentException("ID inválido!");
+            }
 
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
-                    {
-                        if (await reader.ReadAsync())
-                        {
-                            Forms = new Forms
-                            {
-                                Id = (int)reader["id"],
-                                Name = reader["nome"].ToString(),
-                                IdFormsGroup = (int)reader["idGrupoFormulario"]
-                            };
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
+            Forms forms = await _formsRepository.GetFormsByIdAsync(id);
+
+            if (forms == null)
             {
-                Console.WriteLine("Erro não esperado ao obter formulário por ID:", ex.Message);
-                throw;
+                throw new ArgumentException("Id não encontrado!");
             }
-            return Forms;
+
+            return await _formsRepository.GetFormsByIdAsync(id);
         }
 
-        public async Task<int> CreateFormsAsync(Forms forms)
+        public async Task<Forms> CreateFormsAsync(Forms forms)
         {
-            try
+            if (string.IsNullOrWhiteSpace(forms.Name) || forms.Name.Length > 100)
             {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("INSERT INTO formulario (nome, idGrupoFormulario) VALUES (@nome, @idGrupoFormulario); SELECT SCOPE_IDENTITY();", connection);
-                    command.Parameters.AddWithValue("@nome", forms.Name);
-                    command.Parameters.AddWithValue("@idGrupoFormulario", forms.IdFormsGroup);
-
-                    var insertedId = await command.ExecuteScalarAsync();
-                    return Convert.ToInt32(insertedId);
-
-                }
+                throw new ArgumentException("O nome do formulário é inválido!");
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Erro não esperado ao criar formulário:", ex.Message);
-                throw;
-            }
+
+            return await _formsRepository.CreateFormsAsync(forms);
         }
 
         public async Task<bool> UpdateFormsAsync(int id, Forms forms)
         {
-            try
+            if (id <= 0)
             {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("UPDATE formulario SET nome = @nome, idGrupoFormulario = @idGrupoFormulario WHERE id = @id", connection);
-                    command.Parameters.AddWithValue("@id", id);
-                    command.Parameters.AddWithValue("@nome", forms.Name);
-                    command.Parameters.AddWithValue("@idGrupoFormulario", forms.IdFormsGroup);
-
-                    int rowsAffected = await command.ExecuteNonQueryAsync();
-                    return rowsAffected > 0;
-
-                }
+                throw new ArgumentException("ID inválido!");
             }
-            catch (Exception ex)
+
+            Forms existingForms = await _formsRepository.GetFormsByIdAsync(id);
+
+            if (existingForms == null)
             {
-                Console.WriteLine("Erro não esperado ao atualizar formulário:", ex.Message);
-                throw;
+                throw new InvalidOperationException($"Formulário com ID {id} não encontrado!");
             }
+
+            if (string.IsNullOrWhiteSpace(forms.Name) || forms.Name.Length > 100)
+            {
+                throw new ArgumentException("O nome do formulário é inválido!");
+            }
+
+            return await _formsRepository.UpdateFormsAsync(id, forms);
         }
 
         public async Task<bool> DeleteFormsAsync(int id)
         {
-            try
+            if (id <= 0)
             {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("DELETE FROM formulario WHERE @id = id", connection);
-                    command.Parameters.AddWithValue("@id", id);
-
-                    int rowAffected = await command.ExecuteNonQueryAsync();
-                    return rowAffected > 0;
-                }
-            }catch (Exception ex)
-            {
-                Console.WriteLine("Erro não esperado ao excluir formulário:", ex.Message);
-                throw;
+                throw new ArgumentException("ID inválido!");
             }
+
+            Forms existingForms = await _formsRepository.GetFormsByIdAsync(id);
+
+            if (existingForms == null)
+            {
+                throw new InvalidOperationException($"Formulário com ID {id} não encontrado!");
+            }
+
+            return await _formsRepository.DeleteFormsAsync(id);
         }
     }
 }

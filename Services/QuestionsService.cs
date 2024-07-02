@@ -1,5 +1,7 @@
-﻿using MovtechProject.Data;
+﻿using Microsoft.SqlServer.Server;
+using MovtechProject.Data;
 using MovtechProject.Models;
+using MovtechProject.Repositories;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -7,142 +9,88 @@ namespace MovtechProject.Services
 {
     public class QuestionsService
     {
-        private readonly Database _database;
-        public QuestionsService(Database database)
+        private readonly QuestionsRepository _questionsRepository;
+        public QuestionsService(QuestionsRepository questionsRepository)
         {
-            _database = database ?? throw new ArgumentNullException(nameof(database));
+            _questionsRepository = questionsRepository;
         }
 
         public async Task<List<Questions>> GetQuestionsAsync()
         {
-            List<Questions> Questions = new List<Questions>();
+            var lista = _questionsRepository.GetQuestionsAsync();
 
-            try
+            if (lista == null)
             {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("SELECT * FROM perguntas", connection);
-
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            Questions.Add(new Questions
-                            {
-                                Id = (int)reader["id"],
-                                Text = reader.GetString("texto"),
-                                IdForms = (int)reader["idFormulario"]
-                            });
-
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Erro não esperado ao obter as perguntas: ", ex.Message);
-                throw;
+                throw new ArgumentException("Não existe nenhuma pergunta!");
             }
 
-            return Questions;
+            return await _questionsRepository.GetQuestionsAsync();
         }
 
         public async Task<Questions> GetQuestionsByIdAsync(int id)
         {
-            Questions? Questions = null;
-            try
+            if (id <= 0)
             {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("SELECT * FROM perguntas WHERE @id = id", connection);
-                    command.Parameters.AddWithValue("@id", id);
-
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
-                    {
-                        if( await reader.ReadAsync())
-                        {
-                            Questions = new Questions
-                            {
-                                Id = (int)reader["id"],
-                                Text = reader["texto"].ToString(),
-                                IdForms = (int)reader["idFormulario"]
-                            };
-                        }
-                    }
-
-                }
-            }catch (Exception ex)
-            {
-                Console.WriteLine("Erro não esperado ao obter a pergunta por ID:", ex.Message);
-                throw;
+                throw new ArgumentException("ID inválido!");
             }
 
-            return Questions;
+            Questions questions = await _questionsRepository.GetQuestionsByIdAsync(id);
+
+            if (questions == null)
+            {
+                throw new ArgumentException("Id não encontrado!");
+            }
+
+            return await _questionsRepository.GetQuestionsByIdAsync(id);
         }
 
-        public async Task<int> CreateQuestionsAsync(Questions questions)
+        public async Task<Questions> CreateQuestionsAsync(Questions questions)
         {
-            try
+            if (string.IsNullOrWhiteSpace(questions.Text))
             {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("INSERT INTO perguntas (texto, idFormulario) VALUES (@texto, @idFormulario); SELECT SCOPE_IDENTITY();", connection);
-                    command.Parameters.AddWithValue("@texto", questions.Text);
-                    command.Parameters.AddWithValue("@idFormulario", questions.IdForms);
-
-                    var insertedId = await command.ExecuteScalarAsync();
-                    return Convert.ToInt32(insertedId);
-                }
-            }catch (Exception ex)
-            {
-                Console.WriteLine("Erro não esperado ao criar uma pergunta:", ex.Message);
-                throw;
+                throw new ArgumentException("O texto da pergunta é inválido!");
             }
+
+            return await _questionsRepository.CreateQuestionsAsync(questions);
         }
 
         public async Task<bool> UpdateQuestionsAsync(int id, Questions questions)
         {
-            try
+            if (id <= 0)
             {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("UPDATE perguntas SET texto = @texto, idFormulario = @idFormulario WHERE id = @id", connection);
-                    command.Parameters.AddWithValue("@id", id);
-                    command.Parameters.AddWithValue("@texto", questions.Text);
-                    command.Parameters.AddWithValue("@idFormulario", questions.IdForms);
-
-                    int rowsAffected = await command.ExecuteNonQueryAsync();
-                    return rowsAffected > 0;
-                }
-            }catch (Exception ex)
-            {
-                Console.WriteLine("Erro não esperado ao atualizar a pergunta:", ex.Message);
-                throw;
+                throw new ArgumentException("ID inválido!");
             }
+
+            Questions existingQuestions = await _questionsRepository.GetQuestionsByIdAsync(id);
+
+            if (existingQuestions == null)
+            {
+                throw new InvalidOperationException($"Pergunta com ID {id} não encontrado!");
+            }
+
+            if (string.IsNullOrWhiteSpace(questions.Text) || questions.Text.Length > 100)
+            {
+                throw new ArgumentException("O texto da pergunta é inválido!");
+            }
+
+            return await _questionsRepository.UpdateQuestionsAsync(id, questions);
         }
 
         public async Task<bool> DeleteQuestionsAsync(int id)
         {
-            try
+            if (id <= 0)
             {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("DELETE FROM perguntas WHERE @id = id", connection);
-                    command.Parameters.AddWithValue("@id", id);
-
-                    int rowAffected = await command.ExecuteNonQueryAsync();
-                    return rowAffected > 0;
-                }
-            }catch (Exception ex)
-            {
-                Console.WriteLine("Erro não esperado ao excluir a pergunta:", ex.Message);
-                throw;
+                throw new ArgumentException("ID inválido!");
             }
+
+            Questions existingQuestions = await _questionsRepository.GetQuestionsByIdAsync(id);
+
+            if (existingQuestions == null)
+            {
+                throw new InvalidOperationException($"Pergunta com ID {id} não encontrado!");
+            }
+
+            return await _questionsRepository.DeleteQuestionsAsync(id);
         }
     }
 }

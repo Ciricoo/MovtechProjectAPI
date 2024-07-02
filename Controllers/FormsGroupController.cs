@@ -13,44 +13,37 @@ namespace MovtechProject.Controllers
 
         public FormsGroupController(FormsGroupService formsGroupService)
         {
-            _formsGroupService = formsGroupService ?? throw new ArgumentNullException(nameof(formsGroupService));
+            _formsGroupService = formsGroupService;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<FormsGroup>>> GetFormsGroup()
         {
-            List<FormsGroup> formsGroups = await _formsGroupService.GetFormsGroupsAsync();
-            return Ok(formsGroups);
+            List<FormsGroup> get = await _formsGroupService.GetFormsGroupsAsync();
+
+            return Ok(get);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<FormsGroup>> GetFormsGroupById(int id)
         {
-            FormsGroup formsGroup = await _formsGroupService.GetFormsGroupByIdAsync(id);
-            if (formsGroup == null)
-            {
-                return NotFound();
-            }
-            return Ok(formsGroup);
+            FormsGroup getId = await _formsGroupService.GetFormsGroupByIdAsync(id);
+           
+            return Ok(getId);
         }
 
         [HttpPost]
         public async Task<ActionResult<FormsGroup>> CreateFormsGroup(FormsGroup formsGroup) 
         {
-            int insertedId = await _formsGroupService.CreateFormsGroupAsync(formsGroup);
-            formsGroup.Id = insertedId;
+            FormsGroup created = await _formsGroupService.CreateFormsGroupAsync(formsGroup);
 
-            return Ok(formsGroup);
+            return Ok(created);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<bool>> UpdateFormsGroup(int id, FormsGroup formsGroup)
         {
             bool updated = await _formsGroupService.UpdateFormsGroupAsync(id, formsGroup);
-            if (!updated)
-            {
-                return NotFound();
-            }
 
             return Ok(updated);
         }
@@ -59,10 +52,7 @@ namespace MovtechProject.Controllers
         public async Task<ActionResult<bool>> DeleteFormsGroup(int id)
         {
             bool deleted = await _formsGroupService.DeleteFormsGroupAsync(id);
-            if (!deleted)
-            {
-                return NotFound();
-            }
+
             return Ok(deleted);
         }
     }

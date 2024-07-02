@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MovtechProject.Data;
+using MovtechProject.Repositories;
 using MovtechProject.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,8 +17,11 @@ builder.Services.AddSingleton(new Database(connectionString));
 builder.Services.AddScoped<FormsGroupService>();
 builder.Services.AddScoped<FormsService>();
 builder.Services.AddScoped<QuestionsService>();
-builder.Services.AddScoped<AnswerService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<FormsGroupRepository>();
+builder.Services.AddScoped<FormsRepository>();
+builder.Services.AddScoped<QuestionsRepository>();
+builder.Services.AddScoped<UserRepository>();
 
 var app = builder.Build();
 
