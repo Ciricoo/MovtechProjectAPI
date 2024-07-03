@@ -1,9 +1,5 @@
-﻿using MovtechProject.Data;
-using MovtechProject.Models;
+﻿using MovtechProject.Models;
 using MovtechProject.Repositories;
-using System.Data;
-using System.Data.SqlClient;
-using System.Text.RegularExpressions;
 
 namespace MovtechProject.Services
 {
@@ -18,14 +14,14 @@ namespace MovtechProject.Services
 
         public async Task<List<FormsGroup>> GetFormsGroupsAsync()
         {
-            var lista = _formsGroupRepository.GetFormsGroupsAsync();
+            var list = await _formsGroupRepository.GetFormsGroupsAsync();
 
-            if(lista == null)
+            if(list == null || list.Count == 0)
             {
                 throw new ArgumentException("Não existe grupo de formulários!");
             }
 
-            return await _formsGroupRepository.GetFormsGroupsAsync();
+            return list;
         }
 
         public async Task<FormsGroup> GetFormsGroupByIdAsync(int id)
@@ -35,14 +31,14 @@ namespace MovtechProject.Services
                 throw new ArgumentException("ID inválido!");
             }
 
-            FormsGroup formsGroup = await _formsGroupRepository.GetFormsGroupByIdAsync(id);
+            FormsGroup? formsGroup = await _formsGroupRepository.GetFormsGroupByIdAsync(id);
 
             if (formsGroup == null)
             {
                 throw new ArgumentException("Id não encontrado!");
             }
 
-            return await _formsGroupRepository.GetFormsGroupByIdAsync(id);
+            return formsGroup;
         }
 
         public async Task<FormsGroup> CreateFormsGroupAsync(FormsGroup formsGroup)
@@ -53,7 +49,6 @@ namespace MovtechProject.Services
             }
 
             return await _formsGroupRepository.CreateFormsGroupAsync(formsGroup);
-
         }
 
         public async Task<bool> UpdateFormsGroupAsync(int id, FormsGroup formsGroup)
@@ -61,13 +56,6 @@ namespace MovtechProject.Services
             if (id <= 0)
             {
                 throw new ArgumentException("ID inválido!");
-            }
-
-            FormsGroup existingGroup = await _formsGroupRepository.GetFormsGroupByIdAsync(id);
-
-            if (existingGroup == null)
-            {
-                throw new InvalidOperationException($"Grupo de formulário com ID {id} não encontrado!");
             }
 
             if (string.IsNullOrWhiteSpace(formsGroup.Name) || formsGroup.Name.Length > 100)
@@ -83,13 +71,6 @@ namespace MovtechProject.Services
             if (id <= 0)
             {
                 throw new ArgumentException("ID inválido!");
-            }
-
-            FormsGroup existingGroup = await _formsGroupRepository.GetFormsGroupByIdAsync(id);
-
-            if (existingGroup == null)
-            {
-                throw new InvalidOperationException($"Grupo de formulário com ID {id} não encontrado!");
             }
 
             return await _formsGroupRepository.DeleteFormsGroupAsync(id);

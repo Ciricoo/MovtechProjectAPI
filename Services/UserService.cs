@@ -1,10 +1,5 @@
-﻿using Microsoft.SqlServer.Server;
-using MovtechProject.Data;
-using MovtechProject.Models;
-using MovtechProject.Models.Enums;
+﻿using MovtechProject.Models;
 using MovtechProject.Repositories;
-using System.Data;
-using System.Data.SqlClient;
 
 namespace MovtechProject.Services
 {
@@ -18,14 +13,14 @@ namespace MovtechProject.Services
 
         public async Task<List<Users>> GetUsersAsync()
         {
-            var lista = _userRepository.GetUsersAsync();
+            var list = await _userRepository.GetUsersAsync();
 
-            if (lista == null)
+            if (list == null)
             {
                 throw new ArgumentException("Não existe nenhum usuário!");
             }
 
-            return await _userRepository.GetUsersAsync();
+            return list;
         }
 
         public async Task<Users> CreateUsersAsync(Users users)

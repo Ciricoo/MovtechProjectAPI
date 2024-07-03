@@ -47,7 +47,7 @@ namespace MovtechProject.Repositories
             return formsGroup;
         }
 
-        public async Task<FormsGroup> GetFormsGroupByIdAsync(int id)
+        public async Task<FormsGroup?> GetFormsGroupByIdAsync(int id)
         {
             FormsGroup? formsGroup = null;
             try

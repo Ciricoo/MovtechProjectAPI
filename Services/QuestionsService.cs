@@ -1,9 +1,5 @@
-﻿using Microsoft.SqlServer.Server;
-using MovtechProject.Data;
-using MovtechProject.Models;
+﻿using MovtechProject.Models;
 using MovtechProject.Repositories;
-using System.Data;
-using System.Data.SqlClient;
 
 namespace MovtechProject.Services
 {
@@ -17,14 +13,14 @@ namespace MovtechProject.Services
 
         public async Task<List<Questions>> GetQuestionsAsync()
         {
-            var lista = _questionsRepository.GetQuestionsAsync();
+            var list = await _questionsRepository.GetQuestionsAsync();
 
-            if (lista == null)
+            if (list == null)
             {
                 throw new ArgumentException("Não existe nenhuma pergunta!");
             }
 
-            return await _questionsRepository.GetQuestionsAsync();
+            return list;
         }
 
         public async Task<Questions> GetQuestionsByIdAsync(int id)
@@ -34,14 +30,14 @@ namespace MovtechProject.Services
                 throw new ArgumentException("ID inválido!");
             }
 
-            Questions questions = await _questionsRepository.GetQuestionsByIdAsync(id);
+            Questions? questions = await _questionsRepository.GetQuestionsByIdAsync(id);
 
             if (questions == null)
             {
                 throw new ArgumentException("Id não encontrado!");
             }
 
-            return await _questionsRepository.GetQuestionsByIdAsync(id);
+            return questions;
         }
 
         public async Task<Questions> CreateQuestionsAsync(Questions questions)
@@ -61,13 +57,6 @@ namespace MovtechProject.Services
                 throw new ArgumentException("ID inválido!");
             }
 
-            Questions existingQuestions = await _questionsRepository.GetQuestionsByIdAsync(id);
-
-            if (existingQuestions == null)
-            {
-                throw new InvalidOperationException($"Pergunta com ID {id} não encontrado!");
-            }
-
             if (string.IsNullOrWhiteSpace(questions.Text) || questions.Text.Length > 100)
             {
                 throw new ArgumentException("O texto da pergunta é inválido!");
@@ -81,13 +70,6 @@ namespace MovtechProject.Services
             if (id <= 0)
             {
                 throw new ArgumentException("ID inválido!");
-            }
-
-            Questions existingQuestions = await _questionsRepository.GetQuestionsByIdAsync(id);
-
-            if (existingQuestions == null)
-            {
-                throw new InvalidOperationException($"Pergunta com ID {id} não encontrado!");
             }
 
             return await _questionsRepository.DeleteQuestionsAsync(id);

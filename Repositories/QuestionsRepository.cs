@@ -49,7 +49,7 @@ namespace MovtechProject.Repositories
             return Questions;
         }
 
-        public async Task<Questions> GetQuestionsByIdAsync(int id)
+        public async Task<Questions?> GetQuestionsByIdAsync(int id)
         {
             Questions? Questions = null;
             try
