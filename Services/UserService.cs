@@ -29,7 +29,6 @@ namespace MovtechProject.Services
             {
                 throw new ArgumentException("Usuario ou senha não podem ser vazios!");
             }
-
             return await _userRepository.CreateUsersAsync(users);   
         }
     }

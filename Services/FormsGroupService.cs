@@ -6,10 +6,14 @@ namespace MovtechProject.Services
     public class FormsGroupService
     {
         private readonly FormsGroupRepository _formsGroupRepository;
+        private readonly FormsRepository _formsRepository;
+        private readonly QuestionsRepository _questionsRepository;
 
-        public FormsGroupService(FormsGroupRepository formsGroupRepository)
+        public FormsGroupService(FormsGroupRepository formsGroupRepository, FormsRepository formsRepository, QuestionsRepository questionsRepository)
         {
             _formsGroupRepository = formsGroupRepository;
+            _formsRepository = formsRepository;
+            _questionsRepository = questionsRepository;
         }
 
         public async Task<List<FormsGroup>> GetFormsGroupsAsync()
@@ -35,7 +39,14 @@ namespace MovtechProject.Services
 
             if (formsGroup == null)
             {
-                throw new ArgumentException("Id não encontrado!");
+                throw new ArgumentException("    não encontrado!");
+            }
+
+            formsGroup.Forms = await _formsRepository.GetByGroupId(id);
+
+            foreach (Forms form in formsGroup.Forms)
+            {
+                form.Questions = await _questionsRepository.GetByFormsId(form.Id);
             }
 
             return formsGroup;

@@ -9,5 +9,10 @@ namespace MovtechProject.Models
         
         // Usado para indicar que Grupo de Formulário possui uma coleção de Formulários
         public ICollection <Forms> Forms { get; set; }
+
+        public FormsGroup()
+        {
+            Forms = new List<Forms>();
+        }
     }
 }

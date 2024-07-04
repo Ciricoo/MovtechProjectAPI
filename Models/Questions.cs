@@ -7,6 +7,11 @@
         public int IdForms { get; set; }
 
         // Usado para indicar que Perguntas tem uma coleção de respostas
-        public ICollection<Answers>? Respostas { get; set;}
+        public ICollection<Answers> Answers { get; set; }
+
+        public Questions()
+        {
+            Answers = new List<Answers>();
+        }
     }
 }

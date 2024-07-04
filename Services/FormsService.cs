@@ -6,10 +6,12 @@ namespace MovtechProject.Services
     public class FormsService
     {
         private readonly FormsRepository _formsRepository;
+        private readonly QuestionsRepository _questionRepository;
 
-        public FormsService(FormsRepository formsRepository)
+        public FormsService(FormsRepository formsRepository, QuestionsRepository questionRepository)
         {
             _formsRepository = formsRepository;
+            _questionRepository = questionRepository;   
         }
 
 
@@ -39,6 +41,8 @@ namespace MovtechProject.Services
                 throw new ArgumentException("Id não encontrado!");
             }
 
+            forms.Questions = await _questionRepository.GetByFormsId(id);
+
             return forms;
         }
 
@@ -49,7 +53,14 @@ namespace MovtechProject.Services
                 throw new ArgumentException("O nome do formulário é inválido!");
             }
 
-            return await _formsRepository.CreateFormsAsync(forms);
+            Forms createdForms = await _formsRepository.CreateFormsAsync(forms);
+
+            Console.WriteLine(createdForms);
+
+            for (int i = 0; i < forms.Questions.Count; i++) {
+                createdForms.Questions.Add(await _questionRepository.CreateQuestionsAsync(forms.Questions.ToList()[i], createdForms.Id));
+            }
+            return createdForms;
         }
 
         public async Task<bool> UpdateFormsAsync(int id, Forms forms)

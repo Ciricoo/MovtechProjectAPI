@@ -31,13 +31,13 @@ namespace MovtechProject.Controllers
             return Ok(getId);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Questions>> CreateQuestions(Questions questions)
-        {
-            Questions created = await _questionsService.CreateQuestionsAsync(questions);
+        //[HttpPost]
+        //public async Task<ActionResult<Questions>> CreateQuestions(Questions questions)
+        //{
+        //    Questions created = await _questionsService.CreateQuestionsAsync(questions);
 
-            return Ok(created);
-        }
+        //    return Ok(created);
+        //}
 
         [HttpPut("{id}")]
         public async Task<ActionResult<Questions>> UpdateQuestions(int id, Questions questions)

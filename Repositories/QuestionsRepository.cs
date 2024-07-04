@@ -33,7 +33,8 @@ namespace MovtechProject.Repositories
                             {
                                 Id = (int)reader["id"],
                                 Text = reader.GetString("texto"),
-                                IdForms = (int)reader["idFormulario"]
+                                IdForms = (int)reader["idFormulario"],
+                                Answers = new List<Answers>()
                             });
 
                         }
@@ -68,7 +69,8 @@ namespace MovtechProject.Repositories
                             {
                                 Id = (int)reader["id"],
                                 Text = reader.GetString("texto"),
-                                IdForms = (int)reader["idFormulario"]
+                                IdForms = (int)reader["idFormulario"],
+                                Answers = new List<Answers>()
                             };
                         }
                     }
@@ -84,7 +86,7 @@ namespace MovtechProject.Repositories
             return Questions;
         }
 
-        public async Task<Questions> CreateQuestionsAsync(Questions questions)
+        public async Task<Questions> CreateQuestionsAsync(Questions questions, int formId)
         {
             try
             {
@@ -93,10 +95,12 @@ namespace MovtechProject.Repositories
                     await connection.OpenAsync();
                     SqlCommand command = new SqlCommand("INSERT INTO perguntas (texto, idFormulario) VALUES (@texto, @idFormulario); SELECT SCOPE_IDENTITY();", connection);
                     command.Parameters.AddWithValue("@texto", questions.Text);
-                    command.Parameters.AddWithValue("@idFormulario", questions.IdForms);
+                    command.Parameters.AddWithValue("@idFormulario", formId);
 
                     var insertedId = await command.ExecuteScalarAsync();
                     questions.Id = Convert.ToInt32(insertedId);
+                    questions.IdForms = formId;
+
                     return questions;
                 }
             }
@@ -149,6 +153,44 @@ namespace MovtechProject.Repositories
                 Console.WriteLine("Erro não esperado ao excluir a pergunta:", ex.Message);
                 throw;
             }
+        }
+
+
+        public async Task<List<Questions>> GetByFormsId(int idForms)
+        {
+            List<Questions> Question = new List<Questions>();
+
+            try
+            {
+                using (SqlConnection connection = _database.GetConnection())
+                {
+                    await connection.OpenAsync();
+                    SqlCommand command = new SqlCommand("SELECT * FROM perguntas WHERE @idFormulario = idFormulario", connection);
+                    command.Parameters.AddWithValue("@idFormulario", idForms);
+
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            Question.Add(new Questions
+                            {
+                                Id = (int)reader["id"],
+                                Text = reader.GetString("texto"),
+                                IdForms = (int)reader["idFormulario"],
+                                Answers = new List<Answers>()
+                            });
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erro não esperado ao obter o id de formularios: ", ex.Message);
+                throw;
+            }
+
+
+            return Question;
         }
     }
 }

@@ -34,7 +34,7 @@ namespace MovtechProject.Repositories
                                 Id = (int)reader["id"],
                                 Name = reader.GetString("nome"),
                                 IdFormsGroup = (int)reader["idGrupoFormulario"],
-                                Perguntas = new List<Questions>()
+                                Questions = new List<Questions>()
                             });
                         }
                     }
@@ -69,7 +69,8 @@ namespace MovtechProject.Repositories
                             {
                                 Id = (int)reader["id"],
                                 Name = reader.GetString("nome"),
-                                IdFormsGroup = (int)reader["idGrupoFormulario"]
+                                IdFormsGroup = (int)reader["idGrupoFormulario"],
+                                Questions = new List<Questions>()
                             };
                         }
                     }
@@ -95,8 +96,15 @@ namespace MovtechProject.Repositories
                     command.Parameters.AddWithValue("@idGrupoFormulario", forms.IdFormsGroup);
 
                     var insertedId = await command.ExecuteScalarAsync();
-                    forms.Id = Convert.ToInt32(insertedId);
-                    return forms;
+
+                    Forms Forms = new Forms
+                    {
+                        Id = Convert.ToInt32(insertedId),
+                        Name = forms.Name,
+                        IdFormsGroup = forms.IdFormsGroup,
+                    };
+
+                    return Forms;
 
                 }
             }
@@ -150,6 +158,43 @@ namespace MovtechProject.Repositories
                 Console.WriteLine("Erro não esperado ao excluir formulário:", ex.Message);
                 throw;
             }
+        }
+
+        public async Task<List<Forms>> GetByGroupId(int idGroup)
+        {
+            List<Forms> Forms = new List<Forms>();
+
+            try
+            {
+                using (SqlConnection connection = _database.GetConnection())
+                {
+                    await connection.OpenAsync();
+                    SqlCommand command = new SqlCommand("SELECT * FROM formulario WHERE @idGrupoFormulario = idGrupoFormulario", connection);
+                    command.Parameters.AddWithValue("@idGrupoFormulario", idGroup);
+
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            Forms.Add(new Forms
+                            {
+                                Id = (int)reader["id"],
+                                Name = reader.GetString("nome"),
+                                IdFormsGroup = (int)reader["idGrupoFormulario"],
+                                Questions = new List<Questions>()
+                            });
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erro não esperado ao obter o id do grupo de formularios: ", ex.Message);
+                throw;
+            }
+
+
+            return Forms;
         }
 
     }

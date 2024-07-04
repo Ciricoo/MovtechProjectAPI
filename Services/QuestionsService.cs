@@ -40,15 +40,15 @@ namespace MovtechProject.Services
             return questions;
         }
 
-        public async Task<Questions> CreateQuestionsAsync(Questions questions)
-        {
-            if (string.IsNullOrWhiteSpace(questions.Text))
-            {
-                throw new ArgumentException("O texto da pergunta é inválido!");
-            }
+        //public async Task<Questions> CreateQuestionsAsync(Questions questions)
+        //{
+        //    if (string.IsNullOrWhiteSpace(questions.Text))
+        //    {
+        //        throw new ArgumentException("O texto da pergunta é inválido!");
+        //    }
 
-            return await _questionsRepository.CreateQuestionsAsync(questions);
-        }
+        //    return await _questionsRepository.CreateQuestionsAsync(questions,);
+        //}
 
         public async Task<bool> UpdateQuestionsAsync(int id, Questions questions)
         {
