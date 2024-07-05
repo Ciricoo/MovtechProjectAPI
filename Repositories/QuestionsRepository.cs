@@ -86,7 +86,7 @@ namespace MovtechProject.Repositories
             return Questions;
         }
 
-        public async Task<Questions> CreateQuestionsAsync(Questions questions, int formId)
+        public async Task<Questions> CreateQuestionsAsync(Questions questions)
         {
             try
             {
@@ -95,11 +95,10 @@ namespace MovtechProject.Repositories
                     await connection.OpenAsync();
                     SqlCommand command = new SqlCommand("INSERT INTO perguntas (texto, idFormulario) VALUES (@texto, @idFormulario); SELECT SCOPE_IDENTITY();", connection);
                     command.Parameters.AddWithValue("@texto", questions.Text);
-                    command.Parameters.AddWithValue("@idFormulario", formId);
+                    command.Parameters.AddWithValue("@idFormulario", questions.IdForms);
 
                     var insertedId = await command.ExecuteScalarAsync();
                     questions.Id = Convert.ToInt32(insertedId);
-                    questions.IdForms = formId;
 
                     return questions;
                 }
@@ -156,7 +155,7 @@ namespace MovtechProject.Repositories
         }
 
 
-        public async Task<List<Questions>> GetByFormsId(int idForms)
+        public async Task<List<Questions>> GetQuestionByFormsId(int idForms)
         {
             List<Questions> Question = new List<Questions>();
 
@@ -189,8 +188,28 @@ namespace MovtechProject.Repositories
                 throw;
             }
 
-
             return Question;
+        }
+
+        public async Task<bool> DeleteQuestionByFormsId(int formsId)
+        {
+            try
+            {
+                using (SqlConnection connection = _database.GetConnection())
+                {
+                    await connection.OpenAsync();
+                    SqlCommand command = new SqlCommand("DELETE FROM perguntas WHERE idFormulario = @idFormulario", connection);
+                    command.Parameters.AddWithValue("@idFormulario", formsId);
+
+                    int rowsAffected = await command.ExecuteNonQueryAsync();
+                    return rowsAffected > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erro ao excluir perguntas por ID do formulário:", ex.Message);
+                throw;
+            }
         }
     }
 }

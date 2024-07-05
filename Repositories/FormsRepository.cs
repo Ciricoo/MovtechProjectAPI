@@ -160,7 +160,7 @@ namespace MovtechProject.Repositories
             }
         }
 
-        public async Task<List<Forms>> GetByGroupId(int idGroup)
+        public async Task<List<Forms>> GetFormsByGroupId(int idGroup)
         {
             List<Forms> Forms = new List<Forms>();
 
@@ -192,10 +192,7 @@ namespace MovtechProject.Repositories
                 Console.WriteLine("Erro não esperado ao obter o id do grupo de formularios: ", ex.Message);
                 throw;
             }
-
-
             return Forms;
         }
-
     }
 }

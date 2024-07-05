@@ -6,9 +6,11 @@ namespace MovtechProject.Services
     public class QuestionsService
     {
         private readonly QuestionsRepository _questionsRepository;
-        public QuestionsService(QuestionsRepository questionsRepository)
+        private readonly AnswerRepository _answerRepository;
+        public QuestionsService(QuestionsRepository questionsRepository, AnswerRepository answerRepository)
         {
             _questionsRepository = questionsRepository;
+            _answerRepository = answerRepository;
         }
 
         public async Task<List<Questions>> GetQuestionsAsync()
@@ -36,19 +38,21 @@ namespace MovtechProject.Services
             {
                 throw new ArgumentException("Id não encontrado!");
             }
+                
+            questions.Answers = await _answerRepository.GetAnswerByQuestionId(id);
 
             return questions;
         }
 
-        //public async Task<Questions> CreateQuestionsAsync(Questions questions)
-        //{
-        //    if (string.IsNullOrWhiteSpace(questions.Text))
-        //    {
-        //        throw new ArgumentException("O texto da pergunta é inválido!");
-        //    }
+        public async Task<Questions> CreateQuestionsAsync(Questions questions)
+        {
+            if (string.IsNullOrWhiteSpace(questions.Text))
+            {
+                throw new ArgumentException("O texto da pergunta é inválido!");
+            }
 
-        //    return await _questionsRepository.CreateQuestionsAsync(questions,);
-        //}
+            return await _questionsRepository.CreateQuestionsAsync(questions);
+        }
 
         public async Task<bool> UpdateQuestionsAsync(int id, Questions questions)
         {
@@ -72,7 +76,16 @@ namespace MovtechProject.Services
                 throw new ArgumentException("ID inválido!");
             }
 
-            return await _questionsRepository.DeleteQuestionsAsync(id);
+            await _answerRepository.DeleteAnswerByQuestionId(id);
+
+            bool deleted = await _questionsRepository.DeleteQuestionsAsync(id);
+
+            if (deleted == false)
+            {
+                throw new ArgumentException("Id não encontrado!");
+            }
+
+            return deleted;
         }
     }
 }

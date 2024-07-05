@@ -8,12 +8,14 @@ namespace MovtechProject.Services
         private readonly FormsGroupRepository _formsGroupRepository;
         private readonly FormsRepository _formsRepository;
         private readonly QuestionsRepository _questionsRepository;
+        private readonly AnswerRepository _answerRepository;
 
-        public FormsGroupService(FormsGroupRepository formsGroupRepository, FormsRepository formsRepository, QuestionsRepository questionsRepository)
+        public FormsGroupService(FormsGroupRepository formsGroupRepository, FormsRepository formsRepository, QuestionsRepository questionsRepository, AnswerRepository answerRepository)
         {
             _formsGroupRepository = formsGroupRepository;
             _formsRepository = formsRepository;
             _questionsRepository = questionsRepository;
+            _answerRepository = answerRepository;
         }
 
         public async Task<List<FormsGroup>> GetFormsGroupsAsync()
@@ -39,14 +41,19 @@ namespace MovtechProject.Services
 
             if (formsGroup == null)
             {
-                throw new ArgumentException("    não encontrado!");
+                throw new ArgumentException("ID não encontrado!");
             }
 
-            formsGroup.Forms = await _formsRepository.GetByGroupId(id);
+            formsGroup.Forms = await _formsRepository.GetFormsByGroupId(id);
 
             foreach (Forms form in formsGroup.Forms)
             {
-                form.Questions = await _questionsRepository.GetByFormsId(form.Id);
+                form.Questions = await _questionsRepository.GetQuestionByFormsId(form.Id);
+
+                foreach (Questions question in form.Questions)
+                {
+                    question.Answers = await _answerRepository.GetAnswerByQuestionId(question.Id);
+                }
             }
 
             return formsGroup;
@@ -84,7 +91,29 @@ namespace MovtechProject.Services
                 throw new ArgumentException("ID inválido!");
             }
 
-            return await _formsGroupRepository.DeleteFormsGroupAsync(id);
+            List<Forms> forms = await _formsRepository.GetFormsByGroupId(id);
+
+            foreach (Forms form in forms)
+            {
+                List<Questions> questions = await _questionsRepository.GetQuestionByFormsId(form.Id);
+
+                foreach (Questions question in questions)
+                {
+                    await _answerRepository.DeleteAnswerByQuestionId(question.Id);
+                }
+
+                await _questionsRepository.DeleteQuestionByFormsId(form.Id);
+                await _formsRepository.DeleteFormsAsync(form.Id);
+            }
+
+            bool deleted = await _formsGroupRepository.DeleteFormsGroupAsync(id);
+
+            if (deleted == false)
+            {
+                throw new ArgumentException("Id não encontrado!");
+            }
+
+            return deleted;
         }
     }
 }

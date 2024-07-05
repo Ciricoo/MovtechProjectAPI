@@ -100,7 +100,6 @@ namespace MovtechProject.Repositories
                 Console.WriteLine("Erro não esperado ao criar o grupo de formulários:", ex.Message);
                 throw;
             }
-
         }
 
         public async Task<bool> UpdateFormsGroupAsync(int id, FormsGroup formsGroup)
@@ -123,7 +122,6 @@ namespace MovtechProject.Repositories
                 Console.WriteLine("Erro não esperado ao atualizar o grupo de formulários:", ex.Message);
                 throw;
             }
-
         }
 
         public async Task<bool> DeleteFormsGroupAsync(int id)

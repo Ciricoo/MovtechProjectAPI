@@ -111,6 +111,63 @@ namespace MovtechProject.Repositories
                 throw;
             }
         }
+
+        public async Task<List<Answers>> GetAnswerByQuestionId(int idQuestion)
+        {
+            List<Answers> Answer = new List<Answers>();
+
+            try
+            {
+                using (SqlConnection connection = _database.GetConnection())
+                {
+                    await connection.OpenAsync();
+                    SqlCommand command = new SqlCommand("SELECT * FROM respostas WHERE @idPerguntas = idPerguntas", connection);
+                    command.Parameters.AddWithValue("@idPerguntas", idQuestion);
+
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            Answer.Add(new Answers
+                            {
+                                Id = (int)reader["id"],
+                                Note = (int)reader["nota"],
+                                Description = reader.GetString("descricao"),
+                                IdQuestion = (int)reader["idPerguntas"],
+                                IdUser = (int)reader["idUsuario"]
+                            });
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erro não esperado ao obter o id de formularios: ", ex.Message);
+                throw;
+            }
+            return Answer;
+        }
+
+        public async Task<bool> DeleteAnswerByQuestionId(int questionId)
+        {
+            try
+            {
+                using (SqlConnection connection = _database.GetConnection())
+                {
+                    await connection.OpenAsync();
+                    SqlCommand command = new SqlCommand("DELETE FROM respostas WHERE idPerguntas = @idPerguntas", connection);
+                    command.Parameters.AddWithValue("@idPerguntas", questionId);
+
+                    int rowsAffected = await command.ExecuteNonQueryAsync();
+                    return rowsAffected > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erro ao excluir perguntas por ID do formulário:", ex.Message);
+                throw;
+            }
+        }
     }
 }
 
