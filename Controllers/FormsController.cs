@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using MovtechProject.Models;
 using MovtechProject.Services;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MovtechProject.Controllers
 {
@@ -9,50 +11,93 @@ namespace MovtechProject.Controllers
     [ApiController]
     public class FormsController : ControllerBase
     {
-        private readonly FormsService _formsService; 
+        private readonly FormsService _formsService;
 
         public FormsController(FormsService formsService)
         {
             _formsService = formsService;
         }
 
+        private bool IsAuthenticated(out string userType)
+        {
+            if (HttpContext.Request.Headers.TryGetValue("Authorization", out var token))
+            {
+                return UsersController.TryGetUserType(token.ToString(), out userType);
+            }
+
+            userType = string.Empty;
+            return false;
+        }
+
+        private bool IsAuthorized(string requiredRole)
+        {
+            if (IsAuthenticated(out string userType))
+            {
+                if (userType == requiredRole || userType == "Administrador")
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+         
         [HttpGet]
         public async Task<ActionResult<List<Forms>>> GetForms()
         {
-            List<Forms> get = await _formsService.GetFormsAsync();
+            if (!IsAuthenticated(out _))
+            {
+                return Unauthorized("Usuário não autenticado");
+            }
 
-            return Ok(get);    
+            List<Forms> get = await _formsService.GetFormsAsync();
+            return Ok(get);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Forms>> GetFormsById(int id)
         {
-            Forms getId = await _formsService.GetFormsByIdAsync(id);
+            if (!IsAuthenticated(out _))
+            {
+                return Unauthorized("Usuário não autenticado.");
+            }
 
+            Forms getId = await _formsService.GetFormsByIdAsync(id);
             return Ok(getId);
         }
 
         [HttpPost]
         public async Task<ActionResult<Forms>> CreateForms(Forms forms)
         {
-           Forms created = await _formsService.CreateFormsAsync(forms);
+            if (!IsAuthorized("Administrador"))
+            {
+                return Unauthorized("Acesso negado. Apenas administradores podem criar formulários.");
+            }
 
+            Forms created = await _formsService.CreateFormsAsync(forms);
             return Ok(created);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateForms(int id, Forms form)
         {
-            bool updated = await _formsService.UpdateFormsAsync(id, form);
+            if (!IsAuthorized("Administrador"))
+            {
+                return Unauthorized("Acesso negado. Apenas administradores podem atualizar formulários.");
+            }
 
+            bool updated = await _formsService.UpdateFormsAsync(id, form);
             return Ok(updated);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteForms(int id)
         {
-            bool deleted = await _formsService.DeleteFormsAsync(id);
+            if (!IsAuthorized("Administrador"))
+            {
+                return Unauthorized("Acesso negado. Apenas administradores podem excluir formulários.");
+            }
 
+            bool deleted = await _formsService.DeleteFormsAsync(id);
             return Ok(deleted);
         }
     }
