@@ -14,9 +14,8 @@ namespace MovtechProject.Services
             _formsRepository = formsRepository;
             _questionRepository = questionRepository;
             _answerRepository = answerRepository;
+        
         }
-
-
         public async Task<List<Forms>> GetFormsAsync()
         {
             var list = await _formsRepository.GetFormsAsync();

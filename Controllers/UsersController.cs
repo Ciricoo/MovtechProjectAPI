@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using MovtechProject.Models;
 using MovtechProject.Services;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+
 
 namespace MovtechProject.Controllers
 {
@@ -38,23 +39,8 @@ namespace MovtechProject.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(Users loginUser)
         {
-            var users = await _userService.GetUsersAsync();
-            var user = users.FirstOrDefault(u => u.Name == loginUser.Name && u.Password == loginUser.Password);
-
-            if (user == null)
-            {
-                return Unauthorized("Credenciais inválidas.");
-            }
-
-            string token = System.Guid.NewGuid().ToString();
-            _loggedInUsers[token] = user.Type.ToString();
-
+            var token = await _userService.GenerateToken(loginUser);
             return Ok(token);
-        }
-
-        public static bool TryGetUserType(string token, out string userType)
-        {
-            return _loggedInUsers.TryGetValue(token, out userType);
         }
     }
 }
