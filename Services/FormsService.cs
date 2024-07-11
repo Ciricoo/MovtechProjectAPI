@@ -18,7 +18,7 @@ namespace MovtechProject.Services
         }
         public async Task<List<Forms>> GetFormsAsync()
         {
-            var list = await _formsRepository.GetFormsAsync();
+            List<Forms> list = await _formsRepository.GetFormsAsync();
 
             if (list == null)
             {
@@ -60,9 +60,8 @@ namespace MovtechProject.Services
 
             Forms createdForms = await _formsRepository.CreateFormsAsync(forms);
 
-            Console.WriteLine(createdForms);
 
-            foreach (Questions question in createdForms.Questions)
+            foreach (Questions question in forms.Questions)
             {
                 question.IdForms = createdForms.Id;
                 createdForms.Questions.Add(await _questionRepository.CreateQuestionsAsync(question));

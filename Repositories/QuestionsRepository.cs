@@ -43,8 +43,7 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro não esperado ao obter as perguntas: ", ex.Message);
-                throw;
+                throw new ArgumentException("Erro não esperado ao obter as perguntas: ", ex.Message);
             }
 
             return Questions;
@@ -79,8 +78,7 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro não esperado ao obter a pergunta por ID:", ex.Message);
-                throw;
+                throw new ArgumentException("Erro não esperado ao obter a pergunta por ID:", ex.Message);
             }
 
             return Questions;
@@ -105,8 +103,7 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro não esperado ao criar uma pergunta:", ex.Message);
-                throw;
+                throw new ArgumentException("Erro não esperado ao criar uma pergunta:", ex.Message);
             }
         }
 
@@ -128,8 +125,7 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro não esperado ao atualizar a pergunta:", ex.Message);
-                throw;
+                throw new ArgumentException("Erro não esperado ao atualizar a pergunta:", ex.Message);
             }
         }
 
@@ -149,8 +145,7 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro não esperado ao excluir a pergunta:", ex.Message);
-                throw;
+                throw new ArgumentException("Erro não esperado ao excluir a pergunta:", ex.Message);
             }
         }
 
@@ -184,8 +179,7 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro não esperado ao obter o id de formularios: ", ex.Message);
-                throw;
+                throw new ArgumentException("Erro não esperado ao obter o id de formularios: ", ex.Message);
             }
 
             return Question;
@@ -207,8 +201,7 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro ao excluir perguntas por ID do formulário:", ex.Message);
-                throw;
+                throw new ArgumentException("Erro ao excluir perguntas por ID do formulário:", ex.Message);
             }
         }
     }

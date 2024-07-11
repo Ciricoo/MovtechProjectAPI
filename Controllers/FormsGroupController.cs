@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MovtechProject.Models;
 using MovtechProject.Services;
@@ -17,6 +18,7 @@ namespace MovtechProject.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<List<FormsGroup>>> GetFormsGroup()
         {
             List<FormsGroup> get = await _formsGroupService.GetFormsGroupsAsync();
@@ -25,6 +27,7 @@ namespace MovtechProject.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<FormsGroup>> GetFormsGroupById(int id)
         {
             FormsGroup getId = await _formsGroupService.GetFormsGroupByIdAsync(id);
@@ -33,6 +36,7 @@ namespace MovtechProject.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "Administrador")]
         public async Task<ActionResult<FormsGroup>> CreateFormsGroup(FormsGroup formsGroup) 
         {
             FormsGroup created = await _formsGroupService.CreateFormsGroupAsync(formsGroup);
@@ -41,6 +45,7 @@ namespace MovtechProject.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = "Administrador")]
         public async Task<ActionResult<bool>> UpdateFormsGroup(int id, FormsGroup formsGroup)
         {
             bool updated = await _formsGroupService.UpdateFormsGroupAsync(id, formsGroup);
@@ -49,6 +54,7 @@ namespace MovtechProject.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "Administrador")]
         public async Task<ActionResult<bool>> DeleteFormsGroup(int id)
         {
             bool deleted = await _formsGroupService.DeleteFormsGroupAsync(id);

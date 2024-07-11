@@ -20,7 +20,7 @@ namespace MovtechProject.Services
 
         public async Task<List<FormsGroup>> GetFormsGroupsAsync()
         {
-            var list = await _formsGroupRepository.GetFormsGroupsAsync();
+            List<FormsGroup> list = await _formsGroupRepository.GetFormsGroupsAsync();
 
             if(list == null || list.Count == 0)
             {

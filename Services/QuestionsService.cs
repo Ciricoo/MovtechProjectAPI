@@ -15,7 +15,7 @@ namespace MovtechProject.Services
 
         public async Task<List<Questions>> GetQuestionsAsync()
         {
-            var list = await _questionsRepository.GetQuestionsAsync();
+            List<Questions> list = await _questionsRepository.GetQuestionsAsync();
 
             if (list == null)
             {

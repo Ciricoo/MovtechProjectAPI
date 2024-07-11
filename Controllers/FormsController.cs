@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MovtechProject.Models;
 using MovtechProject.Services;
-using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
+
 
 namespace MovtechProject.Controllers
 {
@@ -28,7 +24,6 @@ namespace MovtechProject.Controllers
             List<Forms> get = await _formsService.GetFormsAsync();
             return Ok(get);
         }
-
 
         [HttpGet("{id}")]
         [Authorize]

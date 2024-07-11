@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using MovtechProject.Models;
 using MovtechProject.Services;
 using System.Collections.Concurrent;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+
 
 
 namespace MovtechProject.Controllers
@@ -39,7 +36,7 @@ namespace MovtechProject.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(Users loginUser)
         {
-            var token = await _userService.GenerateToken(loginUser);
+            string token = await _userService.GenerateToken(loginUser);
             return Ok(token);
         }
     }

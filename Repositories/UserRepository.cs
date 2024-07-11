@@ -17,7 +17,7 @@ namespace MovtechProject.Repositories
 
         public async Task<List<Users>> GetUsersAsync()
         {
-            List<Users> Users = new List<Users>();
+            List<Users> users = new List<Users>();
             try
             {
                 using (SqlConnection connection = _database.GetConnection())
@@ -29,13 +29,14 @@ namespace MovtechProject.Repositories
                     {
                         while (await reader.ReadAsync())
                         {
-                            Users.Add(new Users
+                            users.Add(new Users
                             {
                                 Id = (int)reader["id"],
                                 Name = reader.GetString("nome"),
                                 Password = reader.GetString("senha"),
-                                Type = Enum.Parse<UserEnumType>(reader.GetString("tipo"))
-
+                                Type = Enum.TryParse<UserEnumType>(reader.GetString("tipo"), out var userType)
+                                       ? userType
+                                       : throw new InvalidCastException($"Valor inválido para enum UserEnumType: {reader.GetString("tipo")}")
                             });
                         }
                     }
@@ -43,11 +44,10 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro não esperado ao obter formulários: ", ex.Message);
-                throw;
+                throw new ArgumentException("Erro não esperado ao obter usuários: ", ex.Message);
             }
 
-            return Users;
+            return users;
         }
 
         public async Task<Users> CreateUsersAsync(Users users)
@@ -60,18 +60,16 @@ namespace MovtechProject.Repositories
                     SqlCommand command = new SqlCommand("INSERT INTO usuarios (nome, senha, tipo) VALUES (@nome, @senha, @tipo); SELECT SCOPE_IDENTITY();", connection);
                     command.Parameters.AddWithValue("@nome", users.Name);
                     command.Parameters.AddWithValue("@senha", users.Password);
-                    command.Parameters.AddWithValue("@tipo", users.Type);
+                    command.Parameters.AddWithValue("@tipo", users.Type.ToString()); // Armazena o tipo como string
 
                     var insertedId = await command.ExecuteScalarAsync();
                     users.Id = Convert.ToInt32(insertedId);
                     return users;
-
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro não esperado ao criar formulário:", ex.Message);
-                throw;
+                throw new ArgumentException("Erro não esperado ao criar usuário:", ex.Message);
             }
         }
     }

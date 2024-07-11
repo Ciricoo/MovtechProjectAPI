@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MovtechProject.Models;
 using MovtechProject.Services;
@@ -17,6 +17,7 @@ namespace MovtechProject.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "Administrador")]
         public async Task<ActionResult<List<Answers>>> GetAnswers()
         {
             List<Answers> get = await _answerService.GetAnswersAsync();
@@ -24,6 +25,7 @@ namespace MovtechProject.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = "Administrador")]
         public async Task<ActionResult<Answers>> GetAnswersById(int id)
         {
             Answers getId = await _answerService.GetAnswersByIdAsync(id);
@@ -32,6 +34,7 @@ namespace MovtechProject.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Answers>> CreateAnswers(Answers answers)
         {
             Answers created = await _answerService.CreateAnswersAsync(answers);

@@ -40,8 +40,7 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro não esperado ao obter grupos de formulários: ", ex.Message);
-                throw;
+                throw new ArgumentException("Erro não esperado ao obter grupos de formulários: ", ex.Message);
             }
 
             return formsGroup;
@@ -73,8 +72,7 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro não esperado ao obter o grupo de formulário por ID:", ex.Message);
-                throw;
+                throw new ArgumentException("Erro não esperado ao obter o grupo de formulário por ID:", ex.Message);
             }
 
             return formsGroup;
@@ -97,8 +95,7 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro não esperado ao criar o grupo de formulários:", ex.Message);
-                throw;
+                throw new ArgumentException("Erro não esperado ao criar o grupo de formulários:", ex.Message);
             }
         }
 
@@ -119,8 +116,7 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro não esperado ao atualizar o grupo de formulários:", ex.Message);
-                throw;
+                throw new ArgumentException("Erro não esperado ao atualizar o grupo de formulários:", ex.Message);
             }
         }
 
@@ -140,10 +136,8 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro não esperado ao excluir grupo de formulários:", ex.Message);
-                throw;
+                throw new ArgumentException("Erro não esperado ao excluir grupo de formulários:", ex.Message);
             }
-
         }
     }
 }

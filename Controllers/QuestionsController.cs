@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MovtechProject.Models;
 using MovtechProject.Services;
@@ -16,6 +16,7 @@ namespace MovtechProject.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<List<Questions>>> GetQuestions()
         {
             List<Questions> get = await _questionsService.GetQuestionsAsync();
@@ -24,6 +25,7 @@ namespace MovtechProject.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<Questions>> GetQuestionsById(int id)
         {
             Questions getId = await _questionsService.GetQuestionsByIdAsync(id);
@@ -32,6 +34,7 @@ namespace MovtechProject.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "Administrador")]
         public async Task<ActionResult<Questions>> CreateQuestions(Questions questions)
         {
             Questions created = await _questionsService.CreateQuestionsAsync(questions);
@@ -40,6 +43,7 @@ namespace MovtechProject.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = "Administrador")]
         public async Task<ActionResult<Questions>> UpdateQuestions(int id, Questions questions)
         {
             bool updated = await _questionsService.UpdateQuestionsAsync(id, questions);
@@ -48,6 +52,7 @@ namespace MovtechProject.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "Administrador")]
         public async Task<ActionResult<Questions>> DeleteQuestions(int id)
         {
             bool deleted = await _questionsService.DeleteQuestionsAsync(id);

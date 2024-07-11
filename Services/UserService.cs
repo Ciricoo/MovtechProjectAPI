@@ -17,7 +17,7 @@ namespace MovtechProject.Services
 
         public async Task<List<Users>> GetUsersAsync()
         {
-            var list = await _userRepository.GetUsersAsync();
+            List<Users> list = await _userRepository.GetUsersAsync();
 
             if (list == null)
             {
@@ -29,27 +29,35 @@ namespace MovtechProject.Services
 
         public async Task<Users> CreateUsersAsync(Users users)
         {
+            List<Users> usuarios = await _userRepository.GetUsersAsync();
+            Users? user = usuarios.Find(u => users.Name == u.Name);
+
+            if (user != null)
+            {
+                throw new ArgumentException("Já existe um usuário com esse nome!");
+            }
+
             if (string.IsNullOrWhiteSpace(users.Name) || string.IsNullOrWhiteSpace(users.Password))
             {
                 throw new ArgumentException("Usuario ou senha não podem ser vazios!");
             }
-            return await _userRepository.CreateUsersAsync(users);   
+            return await _userRepository.CreateUsersAsync(users);
         }
 
-       public async Task<string> GenerateToken(Users loginUser)
+        public async Task<string> GenerateToken(Users loginUser)
         {
-            var users = await _userRepository.GetUsersAsync();
-            var user = users.FirstOrDefault(u => u.Name == loginUser.Name && u.Password == loginUser.Password);
+            List<Users> users = await _userRepository.GetUsersAsync();
+            Users? user = users.FirstOrDefault(u => u.Name == loginUser.Name && u.Password == loginUser.Password);
 
             if (user == null)
             {
                 throw new ArgumentException("Credenciais inválidas");
             }
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("HJAksfaAFJ*(@*!lÇKASKDH)89fpaIDSD");
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes("43e4dbf0-52ed-4203-895d-42b586496bd4");
 
-            var tokenDescriptor = new SecurityTokenDescriptor
+            SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
@@ -60,10 +68,11 @@ namespace MovtechProject.Services
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
+            SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
+            string tokenString = tokenHandler.WriteToken(token);
 
             return tokenString;
         }
+
     }
 }

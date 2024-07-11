@@ -42,11 +42,8 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro não esperado ao obter formulários: ", ex.Message);
-                throw;
+                throw new ArgumentException("Erro não esperado ao obter formulários: ", ex.Message);  
             }
-
-
             return Forms;
         }
 
@@ -78,8 +75,7 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro não esperado ao obter formulário por ID:", ex.Message);
-                throw;
+                throw new ArgumentException("Erro não esperado ao obter formulário por ID:", ex.Message);
             }
             return Forms;
         }
@@ -110,8 +106,7 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro não esperado ao criar formulário:", ex.Message);
-                throw;
+                throw new ArgumentException("Erro não esperado ao criar formulário:", ex.Message);
             }
         }
 
@@ -134,8 +129,7 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro não esperado ao atualizar formulário:", ex.Message);
-                throw;
+                throw new ArgumentException("Erro não esperado ao atualizar formulário:", ex.Message);
             }
         }
 
@@ -155,8 +149,7 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro não esperado ao excluir formulário:", ex.Message);
-                throw;
+                throw new ArgumentException("Erro não esperado ao excluir formulário:", ex.Message);
             }
         }
 
@@ -189,8 +182,7 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro não esperado ao obter o id do grupo de formularios: ", ex.Message);
-                throw;
+                throw new ArgumentException("Erro não esperado ao obter o id do grupo de formularios: ", ex.Message);
             }
             return Forms;
         }

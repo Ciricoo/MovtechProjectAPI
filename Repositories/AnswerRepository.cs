@@ -43,8 +43,7 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro não esperado ao obter grupos de formulários: ", ex.Message);
-                throw;
+                throw new ArgumentException("Erro não esperado ao obter grupos de formulários: ", ex.Message);
             }
             return answerList;
         }
@@ -79,8 +78,7 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro não esperado ao obter a resposta por ID:", ex.Message);
-                throw;
+                throw new ArgumentException("Erro não esperado ao obter a resposta por ID:", ex.Message);
             }
 
             return answer;
@@ -107,8 +105,7 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro não esperado ao criar a pergunta:", ex.Message);
-                throw;
+                throw new ArgumentException("Erro não esperado ao criar a pergunta:", ex.Message); 
             }
         }
 
@@ -142,8 +139,7 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro não esperado ao obter o id de formularios: ", ex.Message);
-                throw;
+                throw new ArgumentException("Erro não esperado ao obter o id de formularios: ", ex.Message);
             }
             return Answer;
         }
@@ -164,8 +160,7 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro ao excluir perguntas por ID do formulário:", ex.Message);
-                throw;
+                throw new ArgumentException("Erro ao excluir perguntas por ID do formulário:", ex.Message);
             }
         }
     }
