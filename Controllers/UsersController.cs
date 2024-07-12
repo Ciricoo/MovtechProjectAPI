@@ -12,7 +12,6 @@ namespace MovtechProject.Controllers
     public class UsersController : ControllerBase
     {
         private readonly UserService _userService;
-        private static ConcurrentDictionary<string, string> _loggedInUsers = new ConcurrentDictionary<string, string>();
 
         public UsersController(UserService userService)
         {
@@ -36,7 +35,7 @@ namespace MovtechProject.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(Users loginUser)
         {
-            string token = await _userService.GenerateToken(loginUser);
+            string token = await _userService.UserLogin(loginUser);
             return Ok(token);
         }
     }

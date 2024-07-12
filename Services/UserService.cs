@@ -1,5 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using MovtechProject.Models;
+using MovtechProject.Models.Enums;
 using MovtechProject.Repositories;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -30,9 +31,8 @@ namespace MovtechProject.Services
         public async Task<Users> CreateUsersAsync(Users users)
         {
             List<Users> usuarios = await _userRepository.GetUsersAsync();
-            Users? user = usuarios.Find(u => users.Name == u.Name);
 
-            if (user != null)
+            if (usuarios.Any(u => u.Name == users.Name))
             {
                 throw new ArgumentException("Já existe um usuário com esse nome!");
             }
@@ -41,10 +41,15 @@ namespace MovtechProject.Services
             {
                 throw new ArgumentException("Usuario ou senha não podem ser vazios!");
             }
+
+            if (Enum.IsDefined(typeof(UserEnumType), users.Type))
+            {
+                throw new ArgumentException("Tipo de usuário inválido!");
+            }
             return await _userRepository.CreateUsersAsync(users);
         }
 
-        public async Task<string> GenerateToken(Users loginUser)
+        public async Task<string> UserLogin(Users loginUser)
         {
             List<Users> users = await _userRepository.GetUsersAsync();
             Users? user = users.FirstOrDefault(u => u.Name == loginUser.Name && u.Password == loginUser.Password);
@@ -54,6 +59,13 @@ namespace MovtechProject.Services
                 throw new ArgumentException("Credenciais inválidas");
             }
 
+            var token = GenerateToken(loginUser);
+
+            return token;
+        }
+
+        public string GenerateToken(Users loginUser)
+        {
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes("43e4dbf0-52ed-4203-895d-42b586496bd4");
 
@@ -61,8 +73,8 @@ namespace MovtechProject.Services
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-            new Claim(ClaimTypes.Name, user.Name),
-            new Claim(ClaimTypes.Role, user.Type.ToString())
+                    new Claim(ClaimTypes.Name, loginUser.Name),
+                    new Claim(ClaimTypes.Role, loginUser.Type.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddHours(2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -73,6 +85,5 @@ namespace MovtechProject.Services
 
             return tokenString;
         }
-
     }
 }

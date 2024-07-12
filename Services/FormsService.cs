@@ -60,11 +60,10 @@ namespace MovtechProject.Services
 
             Forms createdForms = await _formsRepository.CreateFormsAsync(forms);
 
-
             foreach (Questions question in forms.Questions)
             {
                 question.IdForms = createdForms.Id;
-                createdForms.Questions.Add(await _questionRepository.CreateQuestionsAsync(question));
+                await _questionRepository.CreateQuestionsAsync(question);
             }
             return createdForms;
         }

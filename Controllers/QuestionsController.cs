@@ -48,7 +48,7 @@ namespace MovtechProject.Controllers
         {
             bool updated = await _questionsService.UpdateQuestionsAsync(id, questions);
 
-            return Ok(questions);
+            return Ok(updated);
         }
 
         [HttpDelete("{id}")]

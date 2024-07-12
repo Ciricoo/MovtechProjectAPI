@@ -32,7 +32,7 @@ namespace MovtechProject.Repositories
                             answerList.Add(new Answers()
                             {
                                 Id = (int)reader["id"],
-                                Note = (int)reader["nota"],
+                                Grade = (int)reader["nota"],
                                 Description = reader.GetString("descricao"),
                                 IdQuestion = (int)reader["idPerguntas"],
                                 IdUser = (int)reader["idUsuario"]
@@ -67,7 +67,7 @@ namespace MovtechProject.Repositories
                             answer = (new Answers
                             {
                                 Id = (int)reader["id"],
-                                Note = (int)reader["nota"],
+                                Grade = (int)reader["nota"],
                                 Description = reader.GetString("descricao"),
                                 IdQuestion = (int)reader["idPerguntas"],
                                 IdUser = (int)reader["idUsuario"]
@@ -93,13 +93,13 @@ namespace MovtechProject.Repositories
                     await connection.OpenAsync();
                     SqlCommand command = new SqlCommand("INSERT INTO respostas (nota, descricao, idPerguntas, idUsuario) " +
                         "VALUES (@nota, @descricao, @idPerguntas, @idUsuario) SELECT SCOPE_IDENTITY()", connection);
-                    command.Parameters.AddWithValue("@nota", answers.Note);
+                    command.Parameters.AddWithValue("@nota", answers.Grade);
                     command.Parameters.AddWithValue("@descricao", answers.Description);
                     command.Parameters.AddWithValue("@idPerguntas", answers.IdQuestion);
                     command.Parameters.AddWithValue("@idUsuario", answers.IdUser);
 
-                    var insertedId = await command.ExecuteNonQueryAsync();
-                    answers.Id = insertedId;
+                    var insertedId = await command.ExecuteScalarAsync();
+                    answers.Id = Convert.ToInt32(insertedId);
                     return answers;
                 }
             }
@@ -128,7 +128,7 @@ namespace MovtechProject.Repositories
                             Answer.Add(new Answers
                             {
                                 Id = (int)reader["id"],
-                                Note = (int)reader["nota"],
+                                Grade = (int)reader["nota"],
                                 Description = reader.GetString("descricao"),
                                 IdQuestion = (int)reader["idPerguntas"],
                                 IdUser = (int)reader["idUsuario"]

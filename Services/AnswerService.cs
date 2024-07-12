@@ -43,7 +43,7 @@ namespace MovtechProject.Services
 
         public async Task<Answers> CreateAnswersAsync(Answers answers)
         {
-            if (answers.Note <= 0 || answers.Note > 10)
+            if (answers.Grade < 0 || answers.Grade > 10)
             {
                 throw new ArgumentException("Nota inválida!");
             }

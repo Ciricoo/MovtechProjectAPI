@@ -92,15 +92,9 @@ namespace MovtechProject.Repositories
                     command.Parameters.AddWithValue("@idGrupoFormulario", forms.IdFormsGroup);
 
                     var insertedId = await command.ExecuteScalarAsync();
+                    forms.Id = Convert.ToInt32(insertedId);
 
-                    Forms Forms = new Forms
-                    {
-                        Id = Convert.ToInt32(insertedId),
-                        Name = forms.Name,
-                        IdFormsGroup = forms.IdFormsGroup,
-                    };
-
-                    return Forms;
+                    return forms;
 
                 }
             }

@@ -1,5 +1,6 @@
 ﻿using MovtechProject.Data;
 using MovtechProject.Models;
+using MovtechProject.Models.Enums;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -43,6 +44,7 @@ namespace MovtechProject.Repositories
                 throw new ArgumentException("Erro não esperado ao obter grupos de formulários: ", ex.Message);
             }
 
+            Console.WriteLine(UserEnumType.Administrador.ToString());
             return formsGroup;
         }
 
