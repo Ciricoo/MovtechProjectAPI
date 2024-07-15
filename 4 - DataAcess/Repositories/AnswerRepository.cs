@@ -1,9 +1,9 @@
-﻿using MovtechProject.Data;
-using MovtechProject.Models;
+﻿using MovtechProject.DataAcess.Data;
+using MovtechProject.Domain.Models;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace MovtechProject.Repositories
+namespace MovtechProject.DataAcess.Repositories
 {
     public class AnswerRepository
     {
@@ -14,9 +14,9 @@ namespace MovtechProject.Repositories
             _database = database;
         }
 
-        public async Task<List<Answers>> GetAnswersAsync()
+        public async Task<List<Answer>> GetAnswersAsync()
         {
-            List<Answers> answerList = new List<Answers>();
+            List<Answer> answerList = new List<Answer>();
 
             try
             {
@@ -29,7 +29,7 @@ namespace MovtechProject.Repositories
                     {
                         while (await reader.ReadAsync())
                         {
-                            answerList.Add(new Answers()
+                            answerList.Add(new Answer()
                             {
                                 Id = (int)reader["id"],
                                 Grade = (int)reader["nota"],
@@ -48,9 +48,9 @@ namespace MovtechProject.Repositories
             return answerList;
         }
 
-        public async Task<Answers?> GetAnswersByIdAsync(int id)
+        public async Task<Answer?> GetAnswersByIdAsync(int id)
         {
-            Answers? answer = null;
+            Answer? answer = null;
 
             try
             {
@@ -64,14 +64,14 @@ namespace MovtechProject.Repositories
                     {
                         if (await reader.ReadAsync())
                         {
-                            answer = (new Answers
+                            answer = new Answer
                             {
                                 Id = (int)reader["id"],
                                 Grade = (int)reader["nota"],
                                 Description = reader.GetString("descricao"),
                                 IdQuestion = (int)reader["idPerguntas"],
                                 IdUser = (int)reader["idUsuario"]
-                            });
+                            };
                         }
                     }
                 }
@@ -84,7 +84,7 @@ namespace MovtechProject.Repositories
             return answer;
         }
 
-        public async Task<Answers> CreateAnswersAsync(Answers answers)
+        public async Task<Answer> CreateAnswersAsync(Answer answers)
         {
             try
             {
@@ -105,43 +105,8 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                throw new ArgumentException("Erro não esperado ao criar a pergunta:", ex.Message); 
+                throw new ArgumentException("Erro não esperado ao criar a pergunta:", ex.Message);
             }
-        }
-
-        public async Task<List<Answers>> GetAnswerByQuestionId(int idQuestion)
-        {
-            List<Answers> Answer = new List<Answers>();
-
-            try
-            {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("SELECT * FROM respostas WHERE @idPerguntas = idPerguntas", connection);
-                    command.Parameters.AddWithValue("@idPerguntas", idQuestion);
-
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            Answer.Add(new Answers
-                            {
-                                Id = (int)reader["id"],
-                                Grade = (int)reader["nota"],
-                                Description = reader.GetString("descricao"),
-                                IdQuestion = (int)reader["idPerguntas"],
-                                IdUser = (int)reader["idUsuario"]
-                            });
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new ArgumentException("Erro não esperado ao obter o id de formularios: ", ex.Message);
-            }
-            return Answer;
         }
 
         public async Task<bool> DeleteAnswerByQuestionId(int questionId)

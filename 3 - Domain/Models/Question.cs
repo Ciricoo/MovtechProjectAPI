@@ -1,17 +1,17 @@
-﻿namespace MovtechProject.Models
+﻿namespace MovtechProject.Domain.Models
 {
-    public class Questions
+    public class Question
     {
         public int Id { get; set; }
         public string Text { get; set; } = string.Empty;
         public int IdForms { get; set; }
 
         // Usado para indicar que Perguntas tem uma coleção de respostas
-        public ICollection<Answers> Answers { get; set; }
+        public ICollection<Answer> Answers { get; set; }
 
-        public Questions()
+        public Question()
         {
-            Answers = new List<Answers>();
+            Answers = new List<Answer>();
         }
     }
 }

@@ -1,52 +1,52 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MovtechProject.Models;
+using MovtechProject.Domain.Models;
 using MovtechProject.Services;
 
 namespace MovtechProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FormsGroupController : ControllerBase
+    public class FormGroupController : ControllerBase
     {
-        private readonly FormsGroupService _formsGroupService;
+        private readonly FormGroupService _formsGroupService;
 
-        public FormsGroupController(FormsGroupService formsGroupService)
+        public FormGroupController(FormGroupService formsGroupService)
         {
             _formsGroupService = formsGroupService;
         }
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<List<FormsGroup>>> GetFormsGroup()
+        public async Task<ActionResult<List<FormGroup>>> GetFormsGroup()
         {
-            List<FormsGroup> get = await _formsGroupService.GetFormsGroupsAsync();
+            List<FormGroup> get = await _formsGroupService.GetFormsGroupsAsync();
 
             return Ok(get);
         }
 
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<ActionResult<FormsGroup>> GetFormsGroupById(int id)
+        public async Task<ActionResult<FormGroup>> GetFormsGroupById(int id)
         {
-            FormsGroup getId = await _formsGroupService.GetFormsGroupByIdAsync(id);
+            FormGroup getId = await _formsGroupService.GetFormsGroupByIdAsync(id);
            
             return Ok(getId);
         }
 
         [HttpPost]
         [Authorize(Policy = "Administrador")]
-        public async Task<ActionResult<FormsGroup>> CreateFormsGroup(FormsGroup formsGroup) 
+        public async Task<ActionResult<FormGroup>> CreateFormsGroup(FormGroup formsGroup) 
         {
-            FormsGroup created = await _formsGroupService.CreateFormsGroupAsync(formsGroup);
+            FormGroup created = await _formsGroupService.CreateFormsGroupAsync(formsGroup);
 
             return Ok(created);
         }
 
         [HttpPut("{id}")]
         [Authorize(Policy = "Administrador")]
-        public async Task<ActionResult<bool>> UpdateFormsGroup(int id, FormsGroup formsGroup)
+        public async Task<ActionResult<bool>> UpdateFormsGroup(int id, FormGroup formsGroup)
         {
             bool updated = await _formsGroupService.UpdateFormsGroupAsync(id, formsGroup);
 

@@ -1,6 +1,6 @@
 ﻿using System.Data.SqlClient;
 
-namespace MovtechProject.Data
+namespace MovtechProject.DataAcess.Data
 {
     public class Database
     {

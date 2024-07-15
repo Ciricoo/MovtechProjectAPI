@@ -1,24 +1,24 @@
-﻿using MovtechProject.Models;
-using MovtechProject.Repositories;
+﻿using MovtechProject.DataAcess.Repositories;
+using MovtechProject.Domain.Models;
 
 namespace MovtechProject.Services
 {
-    public class FormsService
+    public class FormService
     {
-        private readonly FormsRepository _formsRepository;
-        private readonly QuestionsRepository _questionRepository;
+        private readonly FormRepository _formsRepository;
+        private readonly QuestionRepository _questionRepository;
         private readonly AnswerRepository _answerRepository;
 
-        public FormsService(FormsRepository formsRepository, QuestionsRepository questionRepository, AnswerRepository answerRepository)
+        public FormService(FormRepository formsRepository, QuestionRepository questionRepository, AnswerRepository answerRepository)
         {
             _formsRepository = formsRepository;
             _questionRepository = questionRepository;
             _answerRepository = answerRepository;
         
         }
-        public async Task<List<Forms>> GetFormsAsync()
+        public async Task<List<Form>> GetFormsAsync()
         {
-            List<Forms> list = await _formsRepository.GetFormsAsync();
+            List<Form> list = await _formsRepository.GetFormsAsync();
 
             if (list == null)
             {
@@ -28,14 +28,14 @@ namespace MovtechProject.Services
             return list;
         }
 
-        public async Task<Forms> GetFormsByIdAsync(int id)
+        public async Task<Form> GetFormsByIdAsync(int id)
         {
             if (id <= 0)
             {
                 throw new ArgumentException("ID inválido!");
             }
 
-            Forms? forms = await _formsRepository.GetFormsByIdAsync(id);
+            Form? forms = await _formsRepository.GetFormsByIdAsync(id);
 
             if (forms == null)
             {
@@ -44,23 +44,19 @@ namespace MovtechProject.Services
 
             forms.Questions = await _questionRepository.GetQuestionByFormsId(id);
 
-            foreach (Questions question in forms.Questions)
-            {
-                question.Answers = await _answerRepository.GetAnswerByQuestionId(question.Id);
-            }
             return forms;
         }
 
-        public async Task<Forms> CreateFormsAsync(Forms forms)
+        public async Task<Form> CreateFormsAsync(Form forms)
         {
-            if (string.IsNullOrWhiteSpace(forms.Name) || forms.Name.Length > 100)
+            if (string.IsNullOrWhiteSpace(forms.Name))
             {
                 throw new ArgumentException("O nome do formulário é inválido!");
             }
 
-            Forms createdForms = await _formsRepository.CreateFormsAsync(forms);
+            Form createdForms = await _formsRepository.CreateFormsAsync(forms);
 
-            foreach (Questions question in forms.Questions)
+            foreach (Question question in forms.Questions)
             {
                 question.IdForms = createdForms.Id;
                 await _questionRepository.CreateQuestionsAsync(question);
@@ -68,14 +64,14 @@ namespace MovtechProject.Services
             return createdForms;
         }
 
-        public async Task<bool> UpdateFormsAsync(int id, Forms forms)
+        public async Task<bool> UpdateFormsAsync(int id, Form forms)
         {
             if (id <= 0)
             {
                 throw new ArgumentException("ID inválido!");
             }
 
-            if (string.IsNullOrWhiteSpace(forms.Name) || forms.Name.Length > 100)
+            if (string.IsNullOrWhiteSpace(forms.Name))
             {
                 throw new ArgumentException("O nome do formulário é inválido!");
             }
@@ -90,9 +86,9 @@ namespace MovtechProject.Services
                 throw new ArgumentException("ID inválido!");
             }
 
-            List<Questions> questions = await _questionRepository.GetQuestionByFormsId(id);
+            List<Question> questions = await _questionRepository.GetQuestionByFormsId(id);
 
-            foreach (Questions question in questions)
+            foreach (Question question in questions)
             {
                 await _answerRepository.DeleteAnswerByQuestionId(question.Id);
             }

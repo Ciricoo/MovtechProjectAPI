@@ -1,22 +1,22 @@
-﻿using MovtechProject.Data;
-using MovtechProject.Models;
+﻿using MovtechProject.DataAcess.Data;
+using MovtechProject.Domain.Models;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace MovtechProject.Repositories
+namespace MovtechProject.DataAcess.Repositories
 {
-    public class FormsRepository
+    public class FormRepository
     {
         private readonly Database _database;
 
-        public FormsRepository(Database database)
+        public FormRepository(Database database)
         {
             _database = database;
         }
 
-        public async Task<List<Forms>> GetFormsAsync()
+        public async Task<List<Form>> GetFormsAsync()
         {
-            List<Forms> Forms = new List<Forms>();
+            List<Form> Forms = new List<Form>();
 
             try
             {
@@ -29,12 +29,12 @@ namespace MovtechProject.Repositories
                     {
                         while (await reader.ReadAsync())
                         {
-                            Forms.Add(new Forms
+                            Forms.Add(new Form
                             {
                                 Id = (int)reader["id"],
                                 Name = reader.GetString("nome"),
                                 IdFormsGroup = (int)reader["idGrupoFormulario"],
-                                Questions = new List<Questions>()
+                                Questions = new List<Question>()
                             });
                         }
                     }
@@ -42,14 +42,14 @@ namespace MovtechProject.Repositories
             }
             catch (Exception ex)
             {
-                throw new ArgumentException("Erro não esperado ao obter formulários: ", ex.Message);  
+                throw new ArgumentException("Erro não esperado ao obter formulários: ", ex.Message);
             }
             return Forms;
         }
 
-        public async Task<Forms?> GetFormsByIdAsync(int id)
+        public async Task<Form?> GetFormsByIdAsync(int id)
         {
-            Forms? Forms = null;
+            Form? Forms = null;
             try
             {
                 using (SqlConnection connection = _database.GetConnection())
@@ -62,12 +62,12 @@ namespace MovtechProject.Repositories
                     {
                         if (await reader.ReadAsync())
                         {
-                            Forms = new Forms
+                            Forms = new Form
                             {
                                 Id = (int)reader["id"],
                                 Name = reader.GetString("nome"),
                                 IdFormsGroup = (int)reader["idGrupoFormulario"],
-                                Questions = new List<Questions>()
+                                Questions = new List<Question>()
                             };
                         }
                     }
@@ -80,7 +80,7 @@ namespace MovtechProject.Repositories
             return Forms;
         }
 
-        public async Task<Forms> CreateFormsAsync(Forms forms)
+        public async Task<Form> CreateFormsAsync(Form forms)
         {
             try
             {
@@ -104,7 +104,7 @@ namespace MovtechProject.Repositories
             }
         }
 
-        public async Task<bool> UpdateFormsAsync(int id, Forms forms)
+        public async Task<bool> UpdateFormsAsync(int id, Form forms)
         {
             try
             {
@@ -147,9 +147,9 @@ namespace MovtechProject.Repositories
             }
         }
 
-        public async Task<List<Forms>> GetFormsByGroupId(int idGroup)
+        public async Task<List<Form>> GetFormsByGroupId(int idGroup)
         {
-            List<Forms> Forms = new List<Forms>();
+            List<Form> Forms = new List<Form>();
 
             try
             {
@@ -163,12 +163,12 @@ namespace MovtechProject.Repositories
                     {
                         while (await reader.ReadAsync())
                         {
-                            Forms.Add(new Forms
+                            Forms.Add(new Form
                             {
                                 Id = (int)reader["id"],
                                 Name = reader.GetString("nome"),
                                 IdFormsGroup = (int)reader["idGrupoFormulario"],
-                                Questions = new List<Questions>()
+                                Questions = new List<Question>()
                             });
                         }
                     }

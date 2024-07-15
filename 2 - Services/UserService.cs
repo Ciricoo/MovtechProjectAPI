@@ -1,7 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using MovtechProject.Models;
-using MovtechProject.Models.Enums;
-using MovtechProject.Repositories;
+using MovtechProject.DataAcess.Repositories;
+using MovtechProject.Domain.Models;
+using MovtechProject.Domain.Models.Enums;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -16,9 +16,9 @@ namespace MovtechProject.Services
             _userRepository = userRepository;
         }
 
-        public async Task<List<Users>> GetUsersAsync()
+        public async Task<List<User>> GetUsersAsync()
         {
-            List<Users> list = await _userRepository.GetUsersAsync();
+            List<User> list = await _userRepository.GetUsersAsync();
 
             if (list == null)
             {
@@ -28,9 +28,9 @@ namespace MovtechProject.Services
             return list;
         }
 
-        public async Task<Users> CreateUsersAsync(Users users)
+        public async Task<User> CreateUsersAsync(User users)
         {
-            List<Users> usuarios = await _userRepository.GetUsersAsync();
+            List<User> usuarios = await _userRepository.GetUsersAsync();
 
             if (usuarios.Any(u => u.Name == users.Name))
             {
@@ -42,17 +42,17 @@ namespace MovtechProject.Services
                 throw new ArgumentException("Usuario ou senha não podem ser vazios!");
             }
 
-            if (Enum.IsDefined(typeof(UserEnumType), users.Type))
+            if (!Enum.IsDefined(typeof(UserEnumType), users.Type))
             {
                 throw new ArgumentException("Tipo de usuário inválido!");
             }
             return await _userRepository.CreateUsersAsync(users);
         }
 
-        public async Task<string> UserLogin(Users loginUser)
+        public async Task<string> UserLogin(User loginUser)
         {
-            List<Users> users = await _userRepository.GetUsersAsync();
-            Users? user = users.FirstOrDefault(u => u.Name == loginUser.Name && u.Password == loginUser.Password);
+            List<User> users = await _userRepository.GetUsersAsync();
+            User? user = users.FirstOrDefault(u => u.Name == loginUser.Name && u.Password == loginUser.Password);
 
             if (user == null)
             {
@@ -64,20 +64,20 @@ namespace MovtechProject.Services
             return token;
         }
 
-        public string GenerateToken(Users loginUser)
+        public string GenerateToken(User loginUser)
         {
-            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("43e4dbf0-52ed-4203-895d-42b586496bd4");
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler(); // Classe que gera o token
+            var key = Encoding.ASCII.GetBytes("43e4dbf0-52ed-4203-895d-42b586496bd4"); // Transformando a chave em um array de bites
 
-            SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
+            SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor // Descreve informações importantes para o token funcionar
             {
-                Subject = new ClaimsIdentity(new Claim[]
+                Subject = new ClaimsIdentity(new Claim[] // Coleção de afirmações sobre o usuário
                 {
                     new Claim(ClaimTypes.Name, loginUser.Name),
                     new Claim(ClaimTypes.Role, loginUser.Type.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddHours(2),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature) // Encriptar e desencriptar o token
             };
 
             SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);

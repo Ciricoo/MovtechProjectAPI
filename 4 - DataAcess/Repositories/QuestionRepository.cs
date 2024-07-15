@@ -1,22 +1,22 @@
-﻿using MovtechProject.Data;
-using MovtechProject.Models;
+﻿using MovtechProject.DataAcess.Data;
+using MovtechProject.Domain.Models;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace MovtechProject.Repositories
+namespace MovtechProject.DataAcess.Repositories
 {
-    public class QuestionsRepository
+    public class QuestionRepository
     {
         private readonly Database _database;
 
-        public QuestionsRepository(Database database)
+        public QuestionRepository(Database database)
         {
             _database = database;
         }
 
-        public async Task<List<Questions>> GetQuestionsAsync()
+        public async Task<List<Question>> GetQuestionsAsync()
         {
-            List<Questions> Questions = new List<Questions>();
+            List<Question> Questions = new List<Question>();
 
             try
             {
@@ -29,12 +29,12 @@ namespace MovtechProject.Repositories
                     {
                         while (await reader.ReadAsync())
                         {
-                            Questions.Add(new Questions
+                            Questions.Add(new Question
                             {
                                 Id = (int)reader["id"],
                                 Text = reader.GetString("texto"),
                                 IdForms = (int)reader["idFormulario"],
-                                Answers = new List<Answers>()
+                                Answers = new List<Answer>()
                             });
 
                         }
@@ -49,9 +49,9 @@ namespace MovtechProject.Repositories
             return Questions;
         }
 
-        public async Task<Questions?> GetQuestionsByIdAsync(int id)
+        public async Task<Question?> GetQuestionsByIdAsync(int id)
         {
-            Questions? Questions = null;
+            Question? Questions = null;
             try
             {
                 using (SqlConnection connection = _database.GetConnection())
@@ -64,12 +64,12 @@ namespace MovtechProject.Repositories
                     {
                         if (await reader.ReadAsync())
                         {
-                            Questions = new Questions
+                            Questions = new Question
                             {
                                 Id = (int)reader["id"],
                                 Text = reader.GetString("texto"),
                                 IdForms = (int)reader["idFormulario"],
-                                Answers = new List<Answers>()
+                                Answers = new List<Answer>()
                             };
                         }
                     }
@@ -84,7 +84,7 @@ namespace MovtechProject.Repositories
             return Questions;
         }
 
-        public async Task<Questions> CreateQuestionsAsync(Questions questions)
+        public async Task<Question> CreateQuestionsAsync(Question questions)
         {
             try
             {
@@ -107,7 +107,7 @@ namespace MovtechProject.Repositories
             }
         }
 
-        public async Task<bool> UpdateQuestionsAsync(int id, Questions questions)
+        public async Task<bool> UpdateQuestionsAsync(int id, Question questions)
         {
             try
             {
@@ -150,9 +150,9 @@ namespace MovtechProject.Repositories
         }
 
 
-        public async Task<List<Questions>> GetQuestionByFormsId(int idForms)
+        public async Task<List<Question>> GetQuestionByFormsId(int idForms)
         {
-            List<Questions> Question = new List<Questions>();
+            List<Question> Question = new List<Question>();
 
             try
             {
@@ -166,12 +166,12 @@ namespace MovtechProject.Repositories
                     {
                         while (await reader.ReadAsync())
                         {
-                            Question.Add(new Questions
+                            Question.Add(new Question
                             {
                                 Id = (int)reader["id"],
                                 Text = reader.GetString("texto"),
                                 IdForms = (int)reader["idFormulario"],
-                                Answers = new List<Answers>()
+                                Answers = new List<Answer>()
                             });
                         }
                     }

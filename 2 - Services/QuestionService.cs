@@ -1,21 +1,21 @@
-﻿using MovtechProject.Models;
-using MovtechProject.Repositories;
+﻿using MovtechProject.DataAcess.Repositories;
+using MovtechProject.Domain.Models;
 
 namespace MovtechProject.Services
 {
-    public class QuestionsService
+    public class QuestionService
     {
-        private readonly QuestionsRepository _questionsRepository;
+        private readonly QuestionRepository _questionsRepository;
         private readonly AnswerRepository _answerRepository;
-        public QuestionsService(QuestionsRepository questionsRepository, AnswerRepository answerRepository)
+        public QuestionService(QuestionRepository questionsRepository, AnswerRepository answerRepository)
         {
             _questionsRepository = questionsRepository;
             _answerRepository = answerRepository;
         }
 
-        public async Task<List<Questions>> GetQuestionsAsync()
+        public async Task<List<Question>> GetQuestionsAsync()
         {
-            List<Questions> list = await _questionsRepository.GetQuestionsAsync();
+            List<Question> list = await _questionsRepository.GetQuestionsAsync();
 
             if (list == null)
             {
@@ -25,45 +25,43 @@ namespace MovtechProject.Services
             return list;
         }
 
-        public async Task<Questions> GetQuestionsByIdAsync(int id)
+        public async Task<Question> GetQuestionsByIdAsync(int id)
         {
             if (id <= 0)
             {
                 throw new ArgumentException("ID inválido!");
             }
 
-            Questions? questions = await _questionsRepository.GetQuestionsByIdAsync(id);
+            Question? questions = await _questionsRepository.GetQuestionsByIdAsync(id);
 
             if (questions == null)
             {
                 throw new ArgumentException("Id não encontrado!");
             }
-                
-            questions.Answers = await _answerRepository.GetAnswerByQuestionId(id);
 
             return questions;
         }
 
-        public async Task<Questions> CreateQuestionsAsync(Questions questions)
+        public async Task<Question> CreateQuestionsAsync(Question questions)
         {
             if (string.IsNullOrWhiteSpace(questions.Text))
             {
-                throw new ArgumentException("O texto da pergunta é inválido!");
+                throw new ArgumentException("O texto da pergunta não pode ser vazio!");
             }
 
             return await _questionsRepository.CreateQuestionsAsync(questions);
         }
 
-        public async Task<bool> UpdateQuestionsAsync(int id, Questions questions)
+        public async Task<bool> UpdateQuestionsAsync(int id, Question questions)
         {
             if (id <= 0)
             {
                 throw new ArgumentException("ID inválido!");
             }
 
-            if (string.IsNullOrWhiteSpace(questions.Text) || questions.Text.Length > 100)
+            if (string.IsNullOrWhiteSpace(questions.Text))
             {
-                throw new ArgumentException("O texto da pergunta é inválido!");
+                throw new ArgumentException("O texto da pergunta não pode ser vazio!");
             }
 
             return await _questionsRepository.UpdateQuestionsAsync(id, questions);

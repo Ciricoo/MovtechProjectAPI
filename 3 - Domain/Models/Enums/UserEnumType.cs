@@ -1,4 +1,4 @@
-﻿namespace MovtechProject.Models.Enums
+﻿namespace MovtechProject.Domain.Models.Enums
 {
     public enum UserEnumType
     {

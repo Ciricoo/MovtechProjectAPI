@@ -1,8 +1,8 @@
-﻿using MovtechProject.Models.Enums;
+﻿using MovtechProject.Domain.Models.Enums;
 
-namespace MovtechProject.Models
+namespace MovtechProject.Domain.Models
 {
-    public class Users
+    public class User
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;

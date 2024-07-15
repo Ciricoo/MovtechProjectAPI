@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MovtechProject.Models;
+using MovtechProject.Domain.Models;
 using MovtechProject.Services;
 using System.Collections.Concurrent;
 
@@ -9,31 +9,31 @@ namespace MovtechProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UserController : ControllerBase
     {
         private readonly UserService _userService;
 
-        public UsersController(UserService userService)
+        public UserController(UserService userService)
         {
             _userService = userService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Users>>> GetUsers()
+        public async Task<ActionResult<List<User>>> GetUsers()
         {
-            List<Users> users = await _userService.GetUsersAsync();
+            List<User> users = await _userService.GetUsersAsync();
             return Ok(users);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Users>> CreateUsers(Users users)
+        public async Task<ActionResult<User>> CreateUsers(User users)
         {
-            Users created = await _userService.CreateUsersAsync(users);
+            User created = await _userService.CreateUsersAsync(users);
             return Ok(created);
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(Users loginUser)
+        public async Task<ActionResult<string>> Login(User loginUser)
         {
             string token = await _userService.UserLogin(loginUser);
             return Ok(token);

@@ -1,10 +1,10 @@
-﻿using MovtechProject.Data;
-using MovtechProject.Models.Enums;
-using MovtechProject.Models;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 using System.Data;
+using MovtechProject.Domain.Models;
+using MovtechProject.Domain.Models.Enums;
+using MovtechProject.DataAcess.Data;
 
-namespace MovtechProject.Repositories
+namespace MovtechProject.DataAcess.Repositories
 {
     public class UserRepository
     {
@@ -15,9 +15,9 @@ namespace MovtechProject.Repositories
             _database = database;
         }
 
-        public async Task<List<Users>> GetUsersAsync()
+        public async Task<List<User>> GetUsersAsync()
         {
-            List<Users> Users = new List<Users>();
+            List<User> Users = new List<User>();
             try
             {
                 using (SqlConnection connection = _database.GetConnection())
@@ -29,7 +29,7 @@ namespace MovtechProject.Repositories
                     {
                         while (await reader.ReadAsync())
                         {
-                            Users.Add(new Users
+                            Users.Add(new User
                             {
                                 Id = (int)reader["id"],
                                 Name = reader.GetString("nome"),
@@ -48,7 +48,7 @@ namespace MovtechProject.Repositories
             return Users;
         }
 
-        public async Task<Users> CreateUsersAsync(Users users)
+        public async Task<User> CreateUsersAsync(User users)
         {
             try
             {

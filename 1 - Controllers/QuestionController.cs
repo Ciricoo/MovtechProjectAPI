@@ -1,50 +1,50 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MovtechProject.Models;
+using MovtechProject.Domain.Models;
 using MovtechProject.Services;
 
 namespace MovtechProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class QuestionsController : ControllerBase
+    public class QuestionController : ControllerBase
     {
-        private readonly QuestionsService _questionsService;
-        public QuestionsController(QuestionsService questionsService)
+        private readonly QuestionService _questionsService;
+        public QuestionController(QuestionService questionsService)
         {
             _questionsService = questionsService;
         }
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<List<Questions>>> GetQuestions()
+        public async Task<ActionResult<List<Question>>> GetQuestions()
         {
-            List<Questions> get = await _questionsService.GetQuestionsAsync();
+            List<Question> get = await _questionsService.GetQuestionsAsync();
 
             return Ok(get);
         }
 
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<ActionResult<Questions>> GetQuestionsById(int id)
+        public async Task<ActionResult<Question>> GetQuestionsById(int id)
         {
-            Questions getId = await _questionsService.GetQuestionsByIdAsync(id);
+            Question getId = await _questionsService.GetQuestionsByIdAsync(id);
 
             return Ok(getId);
         }
 
         [HttpPost]
         [Authorize(Policy = "Administrador")]
-        public async Task<ActionResult<Questions>> CreateQuestions(Questions questions)
+        public async Task<ActionResult<Question>> CreateQuestions(Question questions)
         {
-            Questions created = await _questionsService.CreateQuestionsAsync(questions);
+            Question created = await _questionsService.CreateQuestionsAsync(questions);
 
             return Ok(created);
         }
 
         [HttpPut("{id}")]
         [Authorize(Policy = "Administrador")]
-        public async Task<ActionResult<Questions>> UpdateQuestions(int id, Questions questions)
+        public async Task<ActionResult<Question>> UpdateQuestions(int id, Question questions)
         {
             bool updated = await _questionsService.UpdateQuestionsAsync(id, questions);
 
@@ -53,7 +53,7 @@ namespace MovtechProject.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Policy = "Administrador")]
-        public async Task<ActionResult<Questions>> DeleteQuestions(int id)
+        public async Task<ActionResult<Question>> DeleteQuestions(int id)
         {
             bool deleted = await _questionsService.DeleteQuestionsAsync(id);
 

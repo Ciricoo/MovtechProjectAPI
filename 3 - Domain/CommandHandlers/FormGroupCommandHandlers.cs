@@ -1,17 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using MovtechProject.Models;
-using MovtechProject.Repositories;
+﻿using MovtechProject.DataAcess.Repositories;
+using MovtechProject.Domain.Models;
 
-namespace MovtechProject.Services
+namespace MovtechProject._3___Domain.CommandHandlers
 {
-    public class FormsGroupService
+    public class FormGroupCommandHandlers
     {
-        private readonly FormsGroupRepository _formsGroupRepository;
-        private readonly FormsRepository _formsRepository;
-        private readonly QuestionsRepository _questionsRepository;
+        private readonly FormGroupRepository _formsGroupRepository;
+        private readonly FormRepository _formsRepository;
+        private readonly QuestionRepository _questionsRepository;
         private readonly AnswerRepository _answerRepository;
 
-        public FormsGroupService(FormsGroupRepository formsGroupRepository, FormsRepository formsRepository, QuestionsRepository questionsRepository, AnswerRepository answerRepository)
+        public FormGroupCommandHandlers(FormGroupRepository formsGroupRepository, FormRepository formsRepository, QuestionRepository questionsRepository, AnswerRepository answerRepository)
         {
             _formsGroupRepository = formsGroupRepository;
             _formsRepository = formsRepository;
@@ -19,11 +18,11 @@ namespace MovtechProject.Services
             _answerRepository = answerRepository;
         }
 
-        public async Task<List<FormsGroup>> GetFormsGroupsAsync()
+        public async Task<List<FormGroup>> GetFormsGroupsAsync()
         {
-            List<FormsGroup> list = await _formsGroupRepository.GetFormsGroupsAsync();
+            List<FormGroup> list = await _formsGroupRepository.GetFormsGroupsAsync();
 
-            if(list == null || list.Count == 0)
+            if (list == null || list.Count == 0)
             {
                 throw new ArgumentException("Não existe grupo de formulários!");
             }
@@ -31,14 +30,14 @@ namespace MovtechProject.Services
             return list;
         }
 
-        public async Task<FormsGroup> GetFormsGroupByIdAsync(int id)
+        public async Task<FormGroup> GetFormsGroupByIdAsync(int id)
         {
             if (id <= 0)
             {
                 throw new ArgumentException("ID inválido!");
             }
 
-            FormsGroup? formsGroup = await _formsGroupRepository.GetFormsGroupByIdAsync(id);
+            FormGroup? formsGroup = await _formsGroupRepository.GetFormsGroupByIdAsync(id);
 
             if (formsGroup == null)
             {
@@ -47,22 +46,17 @@ namespace MovtechProject.Services
 
             formsGroup.Forms = await _formsRepository.GetFormsByGroupId(id);
 
-            foreach (Forms form in formsGroup.Forms)
+            foreach (Form form in formsGroup.Forms)
             {
                 form.Questions = await _questionsRepository.GetQuestionByFormsId(form.Id);
-
-                foreach (Questions question in form.Questions)
-                {
-                    question.Answers = await _answerRepository.GetAnswerByQuestionId(question.Id);
-                }
             }
 
             return formsGroup;
         }
 
-        public async Task<FormsGroup> CreateFormsGroupAsync(FormsGroup formsGroup)
+        public async Task<FormGroup> CreateFormsGroupAsync(FormGroup formsGroup)
         {
-            if (string.IsNullOrWhiteSpace(formsGroup.Name) || formsGroup.Name.Length > 100)
+            if (string.IsNullOrWhiteSpace(formsGroup.Name))
             {
                 throw new ArgumentException("O nome do grupo é inválido!");
             }
@@ -70,14 +64,21 @@ namespace MovtechProject.Services
             return await _formsGroupRepository.CreateFormsGroupAsync(formsGroup);
         }
 
-        public async Task<bool> UpdateFormsGroupAsync(int id, FormsGroup formsGroup)
+        public async Task<bool> UpdateFormsGroupAsync(int id, FormGroup formsGroup)
         {
             if (id <= 0)
             {
                 throw new ArgumentException("ID inválido!");
             }
 
-            if (string.IsNullOrWhiteSpace(formsGroup.Name) || formsGroup.Name.Length > 100)
+            FormGroup? formsGroupUpdateId = await _formsGroupRepository.GetFormsGroupByIdAsync(id);
+
+            if (formsGroupUpdateId == null)
+            {
+                throw new ArgumentException("ID não encontrado!");
+            }
+
+            if (string.IsNullOrWhiteSpace(formsGroup.Name))
             {
                 throw new ArgumentException("O nome do grupo de formulários é inválido!");
             }
@@ -92,13 +93,13 @@ namespace MovtechProject.Services
                 throw new ArgumentException("ID inválido!");
             }
 
-            List<Forms> forms = await _formsRepository.GetFormsByGroupId(id);
+            List<Form> forms = await _formsRepository.GetFormsByGroupId(id);
 
-            foreach (Forms form in forms)
+            foreach (Form form in forms)
             {
-                List<Questions> questions = await _questionsRepository.GetQuestionByFormsId(form.Id);
+                List<Question> questions = await _questionsRepository.GetQuestionByFormsId(form.Id);
 
-                foreach (Questions question in questions)
+                foreach (Question question in questions)
                 {
                     await _answerRepository.DeleteAnswerByQuestionId(question.Id);
                 }
@@ -118,3 +119,4 @@ namespace MovtechProject.Services
         }
     }
 }
+

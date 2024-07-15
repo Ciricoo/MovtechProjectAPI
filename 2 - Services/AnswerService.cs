@@ -1,5 +1,5 @@
-﻿using MovtechProject.Models;
-using MovtechProject.Repositories;
+﻿using MovtechProject.DataAcess.Repositories;
+using MovtechProject.Domain.Models;
 
 namespace MovtechProject.Services
 {
@@ -12,9 +12,9 @@ namespace MovtechProject.Services
             _answerRepository = answerRepository;
         }
 
-        public async Task<List<Answers>> GetAnswersAsync()
+        public async Task<List<Answer>> GetAnswersAsync()
         {
-            List<Answers> list = await _answerRepository.GetAnswersAsync();
+            List<Answer> list = await _answerRepository.GetAnswersAsync();
 
             if (list == null)
             {
@@ -24,14 +24,14 @@ namespace MovtechProject.Services
             return list;
         }
 
-        public async Task<Answers> GetAnswersByIdAsync(int id)
+        public async Task<Answer> GetAnswersByIdAsync(int id)
         {
             if (id <= 0)
             {
                 throw new ArgumentException("ID inválido!");
             }
 
-            Answers? answers = await _answerRepository.GetAnswersByIdAsync(id);
+            Answer? answers = await _answerRepository.GetAnswersByIdAsync(id);
 
             if (answers == null)
             {
@@ -41,7 +41,7 @@ namespace MovtechProject.Services
             return answers;
         }
 
-        public async Task<Answers> CreateAnswersAsync(Answers answers)
+        public async Task<Answer> CreateAnswersAsync(Answer answers)
         {
             if (answers.Grade < 0 || answers.Grade > 10)
             {

@@ -1,23 +1,22 @@
-﻿using MovtechProject.Data;
-using MovtechProject.Models;
-using MovtechProject.Models.Enums;
+﻿using MovtechProject.DataAcess.Data;
+using MovtechProject.Domain.Models;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace MovtechProject.Repositories
+namespace MovtechProject.DataAcess.Repositories
 {
-    public class FormsGroupRepository
+    public class FormGroupRepository
     {
         private readonly Database _database;
 
-        public FormsGroupRepository(Database database)
+        public FormGroupRepository(Database database)
         {
             _database = database;
         }
 
-        public async Task<List<FormsGroup>> GetFormsGroupsAsync()
+        public async Task<List<FormGroup>> GetFormsGroupsAsync()
         {
-            List<FormsGroup> formsGroup = new List<FormsGroup>();
+            List<FormGroup> formsGroup = new List<FormGroup>();
 
             try
             {
@@ -30,7 +29,7 @@ namespace MovtechProject.Repositories
                     {
                         while (await reader.ReadAsync())
                         {
-                            formsGroup.Add(new FormsGroup
+                            formsGroup.Add(new FormGroup
                             {
                                 Id = (int)reader["id"],
                                 Name = reader.GetString("nome"),
@@ -44,13 +43,12 @@ namespace MovtechProject.Repositories
                 throw new ArgumentException("Erro não esperado ao obter grupos de formulários: ", ex.Message);
             }
 
-            Console.WriteLine(UserEnumType.Administrador.ToString());
             return formsGroup;
         }
 
-        public async Task<FormsGroup?> GetFormsGroupByIdAsync(int id)
+        public async Task<FormGroup?> GetFormsGroupByIdAsync(int id)
         {
-            FormsGroup? formsGroup = null;
+            FormGroup? formsGroup = null;
             try
             {
                 using (SqlConnection connection = _database.GetConnection())
@@ -63,7 +61,7 @@ namespace MovtechProject.Repositories
                     {
                         if (await reader.ReadAsync())
                         {
-                            formsGroup = new FormsGroup
+                            formsGroup = new FormGroup
                             {
                                 Id = (int)reader["id"],
                                 Name = reader.GetString("nome")
@@ -80,7 +78,7 @@ namespace MovtechProject.Repositories
             return formsGroup;
         }
 
-        public async Task<FormsGroup> CreateFormsGroupAsync(FormsGroup formsGroup)
+        public async Task<FormGroup> CreateFormsGroupAsync(FormGroup formsGroup)
         {
             try
             {
@@ -101,7 +99,7 @@ namespace MovtechProject.Repositories
             }
         }
 
-        public async Task<bool> UpdateFormsGroupAsync(int id, FormsGroup formsGroup)
+        public async Task<bool> UpdateFormsGroupAsync(int id, FormGroup formsGroup)
         {
             try
             {
