@@ -14,33 +14,27 @@ namespace MovtechProject.Services
 
         public async Task<List<FormGroup>> GetFormsGroupsAsync()
         {
-            List<FormGroup> list = await _formGroupCommandHandlers.GetFormsGroupsAsync();
-            return list;
+            return await _formGroupCommandHandlers.GetFormsGroupsAsync();
         }
 
         public async Task<FormGroup> GetFormsGroupByIdAsync(int id)
         {
-            FormGroup formGroupById = await _formGroupCommandHandlers.GetFormsGroupByIdAsync(id);
-            return formGroupById;
+            return await _formGroupCommandHandlers.GetFormsGroupByIdAsync(id);
         }
 
         public async Task<FormGroup> CreateFormsGroupAsync(FormGroup formsGroup)
         {
-            
-            FormGroup createdFormGroup = await _formGroupCommandHandlers.CreateFormsGroupAsync(formsGroup);
-            return createdFormGroup;
+            return await _formGroupCommandHandlers.CreateFormsGroupAsync(formsGroup);
         }
 
         public async Task<bool> UpdateFormsGroupAsync(int id, FormGroup formsGroup)
         {
-            bool updatedFormGroup = await _formGroupCommandHandlers.UpdateFormsGroupAsync(id, formsGroup);
-            return updatedFormGroup;
+            return await _formGroupCommandHandlers.UpdateFormsGroupAsync(id, formsGroup);
         }
 
         public async Task<bool> DeleteFormsGroupAsync(int id)
         {
-            bool deleted = await _formGroupCommandHandlers.DeleteFormsGroupAsync(id);
-            return deleted;
+            return await _formGroupCommandHandlers.DeleteFormsGroupAsync(id);
         }
     }
 }

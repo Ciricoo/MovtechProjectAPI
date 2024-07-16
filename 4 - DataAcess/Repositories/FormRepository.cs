@@ -18,31 +18,24 @@ namespace MovtechProject.DataAcess.Repositories
         {
             List<Form> Forms = new List<Form>();
 
-            try
+            using (SqlConnection connection = _database.GetConnection())
             {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("SELECT * FROM formulario", connection);
+                await connection.OpenAsync();
+                SqlCommand command = new SqlCommand("SELECT * FROM formulario", connection);
 
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
                     {
-                        while (await reader.ReadAsync())
+                        Forms.Add(new Form
                         {
-                            Forms.Add(new Form
-                            {
-                                Id = (int)reader["id"],
-                                Name = reader.GetString("nome"),
-                                IdFormsGroup = (int)reader["idGrupoFormulario"],
-                                Questions = new List<Question>()
-                            });
-                        }
+                            Id = (int)reader["id"],
+                            Name = reader.GetString("nome"),
+                            IdFormsGroup = (int)reader["idGrupoFormulario"],
+                            Questions = new List<Question>()
+                        });
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                throw new ArgumentException("Erro não esperado ao obter formulários: ", ex.Message);
             }
             return Forms;
         }
@@ -50,100 +43,75 @@ namespace MovtechProject.DataAcess.Repositories
         public async Task<Form?> GetFormsByIdAsync(int id)
         {
             Form? Forms = null;
-            try
-            {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("SELECT * FROM formulario WHERE id = @id", connection);
-                    command.Parameters.AddWithValue("@id", id);
 
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+            using (SqlConnection connection = _database.GetConnection())
+            {
+                await connection.OpenAsync();
+                SqlCommand command = new SqlCommand("SELECT * FROM formulario WHERE id = @id", connection);
+                command.Parameters.AddWithValue("@id", id);
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    if (await reader.ReadAsync())
                     {
-                        if (await reader.ReadAsync())
+                        Forms = new Form
                         {
-                            Forms = new Form
-                            {
-                                Id = (int)reader["id"],
-                                Name = reader.GetString("nome"),
-                                IdFormsGroup = (int)reader["idGrupoFormulario"],
-                                Questions = new List<Question>()
-                            };
-                        }
+                            Id = (int)reader["id"],
+                            Name = reader.GetString("nome"),
+                            IdFormsGroup = (int)reader["idGrupoFormulario"],
+                            Questions = new List<Question>()
+                        };
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                throw new ArgumentException("Erro não esperado ao obter formulário por ID:", ex.Message);
-            }
+
             return Forms;
         }
 
         public async Task<Form> CreateFormsAsync(Form forms)
         {
-            try
+            using (SqlConnection connection = _database.GetConnection())
             {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("INSERT INTO formulario (nome, idGrupoFormulario) VALUES (@nome, @idGrupoFormulario); SELECT SCOPE_IDENTITY();", connection);
-                    command.Parameters.AddWithValue("@nome", forms.Name);
-                    command.Parameters.AddWithValue("@idGrupoFormulario", forms.IdFormsGroup);
+                await connection.OpenAsync();
+                SqlCommand command = new SqlCommand("INSERT INTO formulario (nome, idGrupoFormulario) VALUES (@nome, @idGrupoFormulario); SELECT SCOPE_IDENTITY();", connection);
+                command.Parameters.AddWithValue("@nome", forms.Name);
+                command.Parameters.AddWithValue("@idGrupoFormulario", forms.IdFormsGroup);
 
-                    var insertedId = await command.ExecuteScalarAsync();
-                    forms.Id = Convert.ToInt32(insertedId);
+                var insertedId = await command.ExecuteScalarAsync();
+                forms.Id = Convert.ToInt32(insertedId);
 
-                    return forms;
+                return forms;
 
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new ArgumentException("Erro não esperado ao criar formulário:", ex.Message);
             }
         }
 
         public async Task<bool> UpdateFormsAsync(int id, Form forms)
         {
-            try
+            using (SqlConnection connection = _database.GetConnection())
             {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("UPDATE formulario SET nome = @nome, idGrupoFormulario = @idGrupoFormulario WHERE id = @id", connection);
-                    command.Parameters.AddWithValue("@id", id);
-                    command.Parameters.AddWithValue("@nome", forms.Name);
-                    command.Parameters.AddWithValue("@idGrupoFormulario", forms.IdFormsGroup);
+                await connection.OpenAsync();
+                SqlCommand command = new SqlCommand("UPDATE formulario SET nome = @nome, idGrupoFormulario = @idGrupoFormulario WHERE id = @id", connection);
+                command.Parameters.AddWithValue("@id", id);
+                command.Parameters.AddWithValue("@nome", forms.Name);
+                command.Parameters.AddWithValue("@idGrupoFormulario", forms.IdFormsGroup);
 
-                    int rowsAffected = await command.ExecuteNonQueryAsync();
-                    return rowsAffected > 0;
+                int rowsAffected = await command.ExecuteNonQueryAsync();
+                return rowsAffected > 0;
 
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new ArgumentException("Erro não esperado ao atualizar formulário:", ex.Message);
             }
         }
 
         public async Task<bool> DeleteFormsAsync(int id)
         {
-            try
-            {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("DELETE FROM formulario WHERE @id = id", connection);
-                    command.Parameters.AddWithValue("@id", id);
 
-                    int rowAffected = await command.ExecuteNonQueryAsync();
-                    return rowAffected > 0;
-                }
-            }
-            catch (Exception ex)
+            using (SqlConnection connection = _database.GetConnection())
             {
-                throw new ArgumentException("Erro não esperado ao excluir formulário:", ex.Message);
+                await connection.OpenAsync();
+                SqlCommand command = new SqlCommand("DELETE FROM formulario WHERE @id = id", connection);
+                command.Parameters.AddWithValue("@id", id);
+
+                int rowAffected = await command.ExecuteNonQueryAsync();
+                return rowAffected > 0;
             }
         }
 
@@ -151,32 +119,25 @@ namespace MovtechProject.DataAcess.Repositories
         {
             List<Form> Forms = new List<Form>();
 
-            try
+            using (SqlConnection connection = _database.GetConnection())
             {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("SELECT * FROM formulario WHERE @idGrupoFormulario = idGrupoFormulario", connection);
-                    command.Parameters.AddWithValue("@idGrupoFormulario", idGroup);
+                await connection.OpenAsync();
+                SqlCommand command = new SqlCommand("SELECT * FROM formulario WHERE @idGrupoFormulario = idGrupoFormulario", connection);
+                command.Parameters.AddWithValue("@idGrupoFormulario", idGroup);
 
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
                     {
-                        while (await reader.ReadAsync())
+                        Forms.Add(new Form
                         {
-                            Forms.Add(new Form
-                            {
-                                Id = (int)reader["id"],
-                                Name = reader.GetString("nome"),
-                                IdFormsGroup = (int)reader["idGrupoFormulario"],
-                                Questions = new List<Question>()
-                            });
-                        }
+                            Id = (int)reader["id"],
+                            Name = reader.GetString("nome"),
+                            IdFormsGroup = (int)reader["idGrupoFormulario"],
+                            Questions = new List<Question>()
+                        });
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                throw new ArgumentException("Erro não esperado ao obter o id do grupo de formularios: ", ex.Message);
             }
             return Forms;
         }

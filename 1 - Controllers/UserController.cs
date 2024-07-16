@@ -21,8 +21,15 @@ namespace MovtechProject.Controllers
         [HttpGet]
         public async Task<ActionResult<List<User>>> GetUsers()
         {
-            List<User> users = await _userService.GetUsersAsync();
-            return Ok(users);
+            List<User> get = await _userService.GetUsersAsync();
+            return Ok(get);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<User>> GetUserById(int id)
+        {
+            User getId = await _userService.GetUserByIdAsync(id);
+            return Ok(getId);
         }
 
         [HttpPost]

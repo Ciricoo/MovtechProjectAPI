@@ -18,31 +18,53 @@ namespace MovtechProject.DataAcess.Repositories
         public async Task<List<User>> GetUsersAsync()
         {
             List<User> Users = new List<User>();
-            try
-            {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("SELECT * FROM usuarios", connection);
 
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+            using (SqlConnection connection = _database.GetConnection())
+            {
+                await connection.OpenAsync();
+                SqlCommand command = new SqlCommand("SELECT * FROM usuarios", connection);
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
                     {
-                        while (await reader.ReadAsync())
+                        Users.Add(new User
                         {
-                            Users.Add(new User
-                            {
-                                Id = (int)reader["id"],
-                                Name = reader.GetString("nome"),
-                                Password = reader.GetString("senha"),
-                                Type = Enum.Parse<UserEnumType>(reader.GetString("tipo"))
-                            });
-                        }
+                            Id = (int)reader["id"],
+                            Name = reader.GetString("nome"),
+                            Password = reader.GetString("senha"),
+                            Type = Enum.Parse<UserEnumType>(reader.GetString("tipo"))
+                        });
                     }
                 }
             }
-            catch (Exception ex)
+
+            return Users;
+        }
+
+        public async Task<User?> GetUserByIdAsync(int id)
+        {
+            User? Users = null;
+
+            using (SqlConnection connection = _database.GetConnection())
             {
-                throw new ArgumentException("Erro não esperado ao obter formulários: ", ex.Message);
+                await connection.OpenAsync();
+                SqlCommand command = new SqlCommand("SELECT * FROM usuarios WHERE @id = id", connection);
+                command.Parameters.AddWithValue("@id", id);
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        Users = new User
+                        {
+                            Id = (int)reader["id"],
+                            Name = reader.GetString("nome"),
+                            Password = reader.GetString("senha"),
+                            Type = Enum.Parse<UserEnumType>(reader.GetString("tipo"))
+                        };
+                    }
+                }
             }
 
             return Users;
@@ -50,25 +72,18 @@ namespace MovtechProject.DataAcess.Repositories
 
         public async Task<User> CreateUsersAsync(User users)
         {
-            try
+            using (SqlConnection connection = _database.GetConnection())
             {
-                using (SqlConnection connection = _database.GetConnection())
-                {
-                    await connection.OpenAsync();
-                    SqlCommand command = new SqlCommand("INSERT INTO usuarios (nome, senha, tipo) VALUES (@nome, @senha, @tipo); SELECT SCOPE_IDENTITY();", connection);
-                    command.Parameters.AddWithValue("@nome", users.Name);
-                    command.Parameters.AddWithValue("@senha", users.Password);
-                    command.Parameters.AddWithValue("@tipo", users.Type.ToString());
+                await connection.OpenAsync();
+                SqlCommand command = new SqlCommand("INSERT INTO usuarios (nome, senha, tipo) VALUES (@nome, @senha, @tipo); SELECT SCOPE_IDENTITY();", connection);
+                command.Parameters.AddWithValue("@nome", users.Name);
+                command.Parameters.AddWithValue("@senha", users.Password);
+                command.Parameters.AddWithValue("@tipo", users.Type.ToString());
 
-                    var insertedId = await command.ExecuteScalarAsync();
-                    users.Id = Convert.ToInt32(insertedId);
+                var insertedId = await command.ExecuteScalarAsync();
+                users.Id = Convert.ToInt32(insertedId);
 
-                    return users;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new ArgumentException("Erro não esperado ao criar formulário:", ex.Message);
+                return users;
             }
         }
     }

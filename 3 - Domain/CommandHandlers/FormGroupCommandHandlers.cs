@@ -22,7 +22,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
         {
             List<FormGroup> list = await _formsGroupRepository.GetFormsGroupsAsync();
 
-            if (list == null || list.Count == 0)
+            if (!list.Any())
             {
                 throw new ArgumentException("Não existe grupo de formulários!");
             }
@@ -41,7 +41,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             if (formsGroup == null)
             {
-                throw new ArgumentException("ID não encontrado!");
+                throw new KeyNotFoundException("ID não encontrado!");
             }
 
             formsGroup.Forms = await _formsRepository.GetFormsByGroupId(id);
@@ -75,7 +75,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             if (formsGroupUpdateId == null)
             {
-                throw new ArgumentException("ID não encontrado!");
+                throw new KeyNotFoundException("ID não encontrado!");
             }
 
             if (string.IsNullOrWhiteSpace(formsGroup.Name))
@@ -93,6 +93,13 @@ namespace MovtechProject._3___Domain.CommandHandlers
                 throw new ArgumentException("ID inválido!");
             }
 
+            FormGroup? deletedFormGroup = await _formsGroupRepository.GetFormsGroupByIdAsync(id);
+
+            if (deletedFormGroup == null)
+            {
+                throw new KeyNotFoundException("Id não encontrado!");
+            }
+
             List<Form> forms = await _formsRepository.GetFormsByGroupId(id);
 
             foreach (Form form in forms)
@@ -102,20 +109,13 @@ namespace MovtechProject._3___Domain.CommandHandlers
                 foreach (Question question in questions)
                 {
                     await _answerRepository.DeleteAnswerByQuestionId(question.Id);
+                    await _questionsRepository.DeleteQuestionsAsync(question.Id);
                 }
 
-                await _questionsRepository.DeleteQuestionByFormsId(form.Id);
                 await _formsRepository.DeleteFormsAsync(form.Id);
             }
 
-            bool deleted = await _formsGroupRepository.DeleteFormsGroupAsync(id);
-
-            if (deleted == false)
-            {
-                throw new ArgumentException("Id não encontrado!");
-            }
-
-            return deleted;
+            return await _formsGroupRepository.DeleteFormsGroupAsync(id);
         }
     }
 }

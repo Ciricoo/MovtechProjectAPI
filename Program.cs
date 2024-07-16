@@ -32,6 +32,10 @@ builder.Services.AddScoped<AnswerRepository>();
 builder.Services.AddScoped<UserRepository>();
 
 builder.Services.AddScoped<FormGroupCommandHandlers>();
+builder.Services.AddScoped<FormCommandHandlers>();
+builder.Services.AddScoped<QuestionCommandHandlers>();
+builder.Services.AddScoped<AnswerCommandHandlers>();
+builder.Services.AddScoped<UserCommandHandlers>();
 
 string jwtSecretKey = "43e4dbf0-52ed-4203-895d-42b586496bd4";
 
