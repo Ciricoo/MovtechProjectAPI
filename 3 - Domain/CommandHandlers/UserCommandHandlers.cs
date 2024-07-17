@@ -22,7 +22,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             if (!list.Any())
             {
-                throw new ArgumentException("Não existe nenhum usuário!");
+                throw new ArgumentNullException("Não existe nenhum usuário!");
             }
 
             return list;
@@ -32,14 +32,14 @@ namespace MovtechProject._3___Domain.CommandHandlers
         {
             if (id <= 0)
             {
-                throw new ArgumentException("ID inválido!");
+                throw new ArgumentException("ID inválido!", nameof(id));
             }
 
             User? users = await _userRepository.GetUserByIdAsync(id);
 
             if (users == null)
             {
-                throw new ArgumentException("Id não encontrado!");
+                throw new KeyNotFoundException("Id não encontrado!");
             }
 
             return users;
@@ -51,17 +51,17 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             if (usuarios.Any(u => u.Name == users.Name))
             {
-                throw new ArgumentException("Já existe um usuário com esse nome!");
+                throw new ArgumentException("Já existe um usuário com esse nome!", users.Name);
             }
 
             if (string.IsNullOrWhiteSpace(users.Name) || string.IsNullOrWhiteSpace(users.Password))
             {
-                throw new ArgumentException("Usuario ou senha não podem ser vazios!");
+                throw new InvalidOperationException("Usuario ou senha não podem ser vazios!");
             }
 
             if (!Enum.IsDefined(typeof(UserEnumType), users.Type))
             {
-                throw new ArgumentException("Tipo de usuário inválido!");
+                throw new ArgumentException("Tipo de usuário inválido!", nameof(users.Type));
             }
             return await _userRepository.CreateUsersAsync(users);
         }
@@ -73,10 +73,10 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             if (user == null)
             {
-                throw new ArgumentException("Credenciais inválidas");
+                throw new InvalidOperationException("Credenciais inválidas");
             }
 
-            var token = GenerateToken(loginUser);
+            var token = GenerateToken(user);
 
             return token;
         }
@@ -92,6 +92,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
                 {
                     new Claim(ClaimTypes.Name, loginUser.Name),
                     new Claim(ClaimTypes.Role, loginUser.Type.ToString())
+                   
                 }),
                 Expires = DateTime.UtcNow.AddHours(2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature) // Encriptar e desencriptar o token

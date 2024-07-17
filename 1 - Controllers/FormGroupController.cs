@@ -22,7 +22,6 @@ namespace MovtechProject.Controllers
         public async Task<ActionResult<List<FormGroup>>> GetFormsGroup()
         {
             List<FormGroup> get = await _formsGroupService.GetFormsGroupsAsync();
-
             return Ok(get);
         }
 
@@ -31,7 +30,6 @@ namespace MovtechProject.Controllers
         public async Task<ActionResult<FormGroup>> GetFormsGroupById(int id)
         {
             FormGroup getId = await _formsGroupService.GetFormsGroupByIdAsync(id);
-           
             return Ok(getId);
         }
 
@@ -40,7 +38,6 @@ namespace MovtechProject.Controllers
         public async Task<ActionResult<FormGroup>> CreateFormsGroup(FormGroup formsGroup) 
         {
             FormGroup created = await _formsGroupService.CreateFormsGroupAsync(formsGroup);
-
             return Ok(created);
         }
 
@@ -49,7 +46,6 @@ namespace MovtechProject.Controllers
         public async Task<ActionResult<bool>> UpdateFormsGroup(int id, FormGroup formsGroup)
         {
             bool updated = await _formsGroupService.UpdateFormsGroupAsync(id, formsGroup);
-
             return Ok(updated);
         }
 
@@ -58,7 +54,6 @@ namespace MovtechProject.Controllers
         public async Task<ActionResult<bool>> DeleteFormsGroup(int id)
         {
             bool deleted = await _formsGroupService.DeleteFormsGroupAsync(id);
-
             return Ok(deleted);
         }
     }

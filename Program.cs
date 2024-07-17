@@ -25,17 +25,18 @@ builder.Services.AddScoped<QuestionService>();
 builder.Services.AddScoped<AnswerService>();
 builder.Services.AddScoped<UserService>();
 
+builder.Services.AddScoped<FormGroupCommandHandlers>();
+builder.Services.AddScoped<FormCommandHandlers>();
+builder.Services.AddScoped<QuestionCommandHandlers>();
+builder.Services.AddScoped<AnswerCommandHandlers>();
+builder.Services.AddScoped<UserCommandHandlers>();
+
 builder.Services.AddScoped<FormGroupRepository>();
 builder.Services.AddScoped<FormRepository>();
 builder.Services.AddScoped<QuestionRepository>();
 builder.Services.AddScoped<AnswerRepository>();
 builder.Services.AddScoped<UserRepository>();
 
-builder.Services.AddScoped<FormGroupCommandHandlers>();
-builder.Services.AddScoped<FormCommandHandlers>();
-builder.Services.AddScoped<QuestionCommandHandlers>();
-builder.Services.AddScoped<AnswerCommandHandlers>();
-builder.Services.AddScoped<UserCommandHandlers>();
 
 string jwtSecretKey = "43e4dbf0-52ed-4203-895d-42b586496bd4";
 
@@ -44,7 +45,6 @@ builder.Logging.AddConsole();
 builder.Services.AddAuthentication(options => // Configuração de autentificação, vai procurar a cada requisição para ver se o token existe
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options => // 
 {
     options.RequireHttpsMetadata = false; // não precisa do https
@@ -57,6 +57,7 @@ builder.Services.AddAuthentication(options => // Configuração de autentificação,
         ValidateAudience = false,
     };
 });
+
 
 builder.Services.AddAuthorization(options =>
 {

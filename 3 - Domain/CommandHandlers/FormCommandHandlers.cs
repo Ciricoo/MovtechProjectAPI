@@ -56,7 +56,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
                 throw new ArgumentException("O nome do formulário é inválido!", forms.Name);
             }
 
-            FormGroup? FkFormGroup = await _formGroupRepository.GetFormsGroupByIdAsync(forms.Id);
+            FormGroup? FkFormGroup = await _formGroupRepository.GetFormsGroupByIdAsync(forms.IdFormsGroup);
 
             if(FkFormGroup == null)
             {
@@ -88,7 +88,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
                 throw new KeyNotFoundException("Id não encontrado!");
             }
 
-            FormGroup? FkFormGroup = await _formGroupRepository.GetFormsGroupByIdAsync(forms.Id);
+            FormGroup? FkFormGroup = await _formGroupRepository.GetFormsGroupByIdAsync(forms.IdFormsGroup);
 
             if (FkFormGroup == null)
             {

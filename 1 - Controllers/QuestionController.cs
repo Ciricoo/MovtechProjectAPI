@@ -20,7 +20,6 @@ namespace MovtechProject.Controllers
         public async Task<ActionResult<List<Question>>> GetQuestions()
         {
             List<Question> get = await _questionsService.GetQuestionsAsync();
-
             return Ok(get);
         }
 
@@ -29,7 +28,6 @@ namespace MovtechProject.Controllers
         public async Task<ActionResult<Question>> GetQuestionsById(int id)
         {
             Question getId = await _questionsService.GetQuestionsByIdAsync(id);
-
             return Ok(getId);
         }
 
@@ -38,7 +36,6 @@ namespace MovtechProject.Controllers
         public async Task<ActionResult<Question>> CreateQuestions(Question questions)
         {
             Question created = await _questionsService.CreateQuestionsAsync(questions);
-
             return Ok(created);
         }
 
@@ -47,7 +44,6 @@ namespace MovtechProject.Controllers
         public async Task<ActionResult<Question>> UpdateQuestions(int id, Question questions)
         {
             bool updated = await _questionsService.UpdateQuestionsAsync(id, questions);
-
             return Ok(updated);
         }
 
@@ -56,7 +52,6 @@ namespace MovtechProject.Controllers
         public async Task<ActionResult<Question>> DeleteQuestions(int id)
         {
             bool deleted = await _questionsService.DeleteQuestionsAsync(id);
-
             return Ok(deleted);
         }
     }

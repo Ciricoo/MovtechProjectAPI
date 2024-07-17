@@ -52,14 +52,14 @@ namespace MovtechProject._3___Domain.CommandHandlers
                 throw new ArgumentException("Nota inválida!", nameof(answers.Grade));
             }
 
-            Question? FkQuestion = await _questionRepository.GetQuestionsByIdAsync(answers.Id);
+            Question? FkQuestion = await _questionRepository.GetQuestionsByIdAsync(answers.IdQuestion);
 
             if (FkQuestion == null)
             {
                 throw new KeyNotFoundException("FK de perguntas inválida!");
             }
 
-            User? FkUser = await _userRepository.GetUserByIdAsync(answers.Id);
+            User? FkUser = await _userRepository.GetUserByIdAsync(answers.IdUser);
 
             if (FkUser == null)
             {

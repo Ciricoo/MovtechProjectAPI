@@ -22,7 +22,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             if (list == null)
             {
-                throw new ArgumentException("Não existe nenhuma pergunta!");
+                throw new ArgumentNullException("Não existe nenhuma pergunta!");
             }
 
             return list;
@@ -32,7 +32,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
         {
             if (id <= 0)
             {
-                throw new ArgumentException("ID inválido!");
+                throw new ArgumentException("ID inválido!", nameof(id));
             }
 
             Question? questions = await _questionsRepository.GetQuestionsByIdAsync(id);
@@ -49,10 +49,10 @@ namespace MovtechProject._3___Domain.CommandHandlers
         {
             if (string.IsNullOrWhiteSpace(questions.Text))
             {
-                throw new ArgumentException("O texto da pergunta não pode ser vazio!");
+                throw new ArgumentException("O texto da pergunta não pode ser vazio!", questions.Text);
             }
 
-            Form? FkForm = await _formRepository.GetFormsByIdAsync(questions.Id);
+            Form? FkForm = await _formRepository.GetFormsByIdAsync(questions.IdForms);
 
             if(FkForm == null)
             {
@@ -66,7 +66,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
         {
             if (id <= 0)
             {
-                throw new ArgumentException("ID inválido!");
+                throw new ArgumentException("ID inválido!", nameof(id));
             }
 
             Question? updateQuestion = await _questionsRepository.GetQuestionsByIdAsync(id);
@@ -76,7 +76,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
                 throw new KeyNotFoundException("Id não encontrado!");
             }
 
-            Form? FkForm = await _formRepository.GetFormsByIdAsync(questions.Id);
+            Form? FkForm = await _formRepository.GetFormsByIdAsync(questions.IdForms);
 
             if (FkForm == null)
             {
@@ -85,7 +85,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             if (string.IsNullOrWhiteSpace(questions.Text))
             {
-                throw new ArgumentException("O texto da pergunta não pode ser vazio!");
+                throw new ArgumentException("O texto da pergunta não pode ser vazio!", questions.Text);
             }
 
             return await _questionsRepository.UpdateQuestionsAsync(id, questions);
@@ -95,7 +95,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
         {
             if (id <= 0)
             {
-                throw new ArgumentException("ID inválido!");
+                throw new ArgumentException("ID inválido!", nameof(id));
             }
 
             Question? deleteQuestion = await _questionsRepository.GetQuestionsByIdAsync(id);

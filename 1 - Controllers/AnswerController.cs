@@ -29,7 +29,6 @@ namespace MovtechProject.Controllers
         public async Task<ActionResult<Answer>> GetAnswersById(int id)
         {
             Answer getId = await _answerService.GetAnswersByIdAsync(id);
-
             return Ok(getId);
         }
 
@@ -38,7 +37,6 @@ namespace MovtechProject.Controllers
         public async Task<ActionResult<Answer>> CreateAnswers(Answer answers)
         {
             Answer created = await _answerService.CreateAnswersAsync(answers);
-
             return Ok(created);
         }
 

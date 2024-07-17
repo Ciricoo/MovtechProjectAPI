@@ -24,7 +24,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             if (!list.Any())
             {
-                throw new ArgumentException("Não existe grupo de formulários!");
+                throw new ArgumentNullException("Não existe grupo de formulários!");
             }
 
             return list;
@@ -34,7 +34,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
         {
             if (id <= 0)
             {
-                throw new ArgumentException("ID inválido!");
+                throw new ArgumentException("ID inválido!", nameof(id));
             }
 
             FormGroup? formsGroup = await _formsGroupRepository.GetFormsGroupByIdAsync(id);
@@ -58,7 +58,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
         {
             if (string.IsNullOrWhiteSpace(formsGroup.Name))
             {
-                throw new ArgumentException("O nome do grupo é inválido!");
+                throw new ArgumentException("O nome do grupo é inválido!", formsGroup.Name);
             }
 
             return await _formsGroupRepository.CreateFormsGroupAsync(formsGroup);
@@ -68,7 +68,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
         {
             if (id <= 0)
             {
-                throw new ArgumentException("ID inválido!");
+                throw new ArgumentException("ID inválido!", nameof(id));
             }
 
             FormGroup? formsGroupUpdateId = await _formsGroupRepository.GetFormsGroupByIdAsync(id);
@@ -80,7 +80,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             if (string.IsNullOrWhiteSpace(formsGroup.Name))
             {
-                throw new ArgumentException("O nome do grupo de formulários é inválido!");
+                throw new ArgumentException("O nome do grupo de formulários é inválido!", formsGroup.Name);
             }
 
             return await _formsGroupRepository.UpdateFormsGroupAsync(id, formsGroup);
@@ -90,7 +90,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
         {
             if (id <= 0)
             {
-                throw new ArgumentException("ID inválido!");
+                throw new ArgumentException("ID inválido!", nameof(id));
             }
 
             FormGroup? deletedFormGroup = await _formsGroupRepository.GetFormsGroupByIdAsync(id);
