@@ -32,7 +32,7 @@ namespace MovtechProject.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult<Question>> CreateQuestions(Question questions)
         {
             Question created = await _questionsService.CreateQuestionsAsync(questions);
@@ -40,7 +40,7 @@ namespace MovtechProject.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Policy = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult<Question>> UpdateQuestions(int id, Question questions)
         {
             bool updated = await _questionsService.UpdateQuestionsAsync(id, questions);
@@ -48,7 +48,7 @@ namespace MovtechProject.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Policy = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult<Question>> DeleteQuestions(int id)
         {
             bool deleted = await _questionsService.DeleteQuestionsAsync(id);

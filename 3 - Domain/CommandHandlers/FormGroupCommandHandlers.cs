@@ -41,7 +41,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             if (formsGroup == null)
             {
-                throw new KeyNotFoundException("ID não encontrado!");
+                throw new KeyNotFoundException($"ID {id} não encontrado!");
             }
 
             formsGroup.Forms = await _formsRepository.GetFormsByGroupId(id);
@@ -75,7 +75,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             if (formsGroupUpdateId == null)
             {
-                throw new KeyNotFoundException("ID não encontrado!");
+                throw new KeyNotFoundException($"ID {id} não encontrado!");
             }
 
             if (string.IsNullOrWhiteSpace(formsGroup.Name))
@@ -97,7 +97,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             if (deletedFormGroup == null)
             {
-                throw new KeyNotFoundException("Id não encontrado!");
+                throw new KeyNotFoundException($"Id {id} não encontrado!");
             }
 
             List<Form> forms = await _formsRepository.GetFormsByGroupId(id);

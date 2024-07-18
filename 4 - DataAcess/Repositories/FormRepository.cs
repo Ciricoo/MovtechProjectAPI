@@ -58,7 +58,7 @@ namespace MovtechProject.DataAcess.Repositories
                         {
                             Id = (int)reader["id"],
                             Name = reader.GetString("nome"),
-                            IdFormsGroup = (int)reader["idGrupoFormulario"],
+                             
                             Questions = new List<Question>()
                         };
                     }

@@ -1,11 +1,6 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using MovtechProject._3___Domain.CommandHandlers;
-using MovtechProject.DataAcess.Repositories;
+﻿using MovtechProject._3___Domain.CommandHandlers;
 using MovtechProject.Domain.Models;
-using MovtechProject.Domain.Models.Enums;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+
 
 namespace MovtechProject.Services
 {

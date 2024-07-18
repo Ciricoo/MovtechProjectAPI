@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MovtechProject.Domain.Models;
 using MovtechProject.Services;
 using System.Collections.Concurrent;
@@ -18,6 +19,7 @@ namespace MovtechProject.Controllers
             _userService = userService;
         }
 
+        [Authorize(Roles = "Administrador")]
         [HttpGet]
         public async Task<ActionResult<List<User>>> GetUsers()
         {
@@ -25,10 +27,12 @@ namespace MovtechProject.Controllers
             return Ok(get);
         }
 
+        [Authorize(Roles = "Administrador")]
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUserById(int id)
         {
             User getId = await _userService.GetUserByIdAsync(id);
+            
             return Ok(getId);
         }
 

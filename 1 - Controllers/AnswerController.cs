@@ -17,7 +17,7 @@ namespace MovtechProject.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult<List<Answer>>> GetAnswers()
         {
             List<Answer> get = await _answerService.GetAnswersAsync();
@@ -25,7 +25,7 @@ namespace MovtechProject.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Policy = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult<Answer>> GetAnswersById(int id)
         {
             Answer getId = await _answerService.GetAnswersByIdAsync(id);

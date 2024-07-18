@@ -39,7 +39,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             if (questions == null)
             {
-                throw new KeyNotFoundException("Id não encontrado!");
+                throw new KeyNotFoundException($"Id {id} não encontrado!");
             }
 
             return questions;
@@ -56,7 +56,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             if(FkForm == null)
             {
-                throw new KeyNotFoundException("FK do formulário inválida!");
+                throw new KeyNotFoundException($"FK do formulário {questions.IdForms} inválida!");
             }
 
             return await _questionsRepository.CreateQuestionsAsync(questions);
@@ -73,14 +73,14 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             if (updateQuestion == null)
             {
-                throw new KeyNotFoundException("Id não encontrado!");
+                throw new KeyNotFoundException($"Id {id} não encontrado!");
             }
 
             Form? FkForm = await _formRepository.GetFormsByIdAsync(questions.IdForms);
 
             if (FkForm == null)
             {
-                throw new KeyNotFoundException("FK do formulário inválida!");
+                throw new KeyNotFoundException($"FK do formulário {questions.IdForms} inválida!");
             }
 
             if (string.IsNullOrWhiteSpace(questions.Text))
@@ -102,7 +102,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             if (deleteQuestion == null)
             {
-                throw new KeyNotFoundException("Id não encontrado!");
+                throw new KeyNotFoundException($"Id {id} não encontrado!");
             }
 
             await _answerRepository.DeleteAnswerByQuestionId(id);

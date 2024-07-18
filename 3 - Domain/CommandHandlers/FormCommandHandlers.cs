@@ -41,7 +41,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             if (forms == null)
             {
-                throw new KeyNotFoundException("Id não encontrado!");
+                throw new KeyNotFoundException($"Id {id} não encontrado!");
             }
 
             forms.Questions = await _questionRepository.GetQuestionByFormsId(id);
@@ -60,7 +60,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             if(FkFormGroup == null)
             {
-                throw new KeyNotFoundException("FK de grupo de formulário inválida!");
+                throw new KeyNotFoundException($"FK de grupo de formulário {forms.IdFormsGroup} inválida!");
             }
 
             Form createdForms = await _formsRepository.CreateFormsAsync(forms);
@@ -85,14 +85,14 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             if (updatedForm == null)
             {
-                throw new KeyNotFoundException("Id não encontrado!");
+                throw new KeyNotFoundException($"Id {id} não encontrado!");
             }
 
             FormGroup? FkFormGroup = await _formGroupRepository.GetFormsGroupByIdAsync(forms.IdFormsGroup);
 
             if (FkFormGroup == null)
             {
-                throw new KeyNotFoundException("FK de grupo de formulário inválida!");
+                throw new KeyNotFoundException($"FK de grupo de formulário {forms.IdFormsGroup} inválida!");
             }
 
             if (string.IsNullOrWhiteSpace(forms.Name))
@@ -114,7 +114,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             if (deletedForm == null)
             {
-                throw new KeyNotFoundException("Id não encontrado!");
+                throw new KeyNotFoundException($"Id {id} não encontrado!");
             }
 
             List<Question> questions = await _questionRepository.GetQuestionByFormsId(id);

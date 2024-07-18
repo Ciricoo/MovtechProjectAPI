@@ -39,7 +39,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             if (answers == null)
             {
-                throw new KeyNotFoundException("Id não encontrado!");
+                throw new KeyNotFoundException($"Id {id} não encontrado!");
             }
 
             return answers;
@@ -56,14 +56,14 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             if (FkQuestion == null)
             {
-                throw new KeyNotFoundException("FK de perguntas inválida!");
+                throw new KeyNotFoundException($"FK de perguntas {answers.IdQuestion} inválida!");
             }
 
             User? FkUser = await _userRepository.GetUserByIdAsync(answers.IdUser);
 
             if (FkUser == null)
             {
-                throw new KeyNotFoundException("FK de usuário inválida!");
+                throw new KeyNotFoundException($"FK de usuário {answers.IdUser} inválida!");
             }
 
             return await _answerRepository.CreateAnswersAsync(answers);

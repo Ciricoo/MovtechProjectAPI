@@ -39,7 +39,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             if (users == null)
             {
-                throw new KeyNotFoundException("Id não encontrado!");
+                throw new KeyNotFoundException($"Id {id} não encontrado!");
             }
 
             return users;
@@ -76,7 +76,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
                 throw new InvalidOperationException("Credenciais inválidas");
             }
 
-            var token = GenerateToken(user);
+            string token = GenerateToken(user);
 
             return token;
         }
@@ -94,7 +94,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
                     new Claim(ClaimTypes.Role, loginUser.Type.ToString())
                    
                 }),
-                Expires = DateTime.UtcNow.AddHours(2),
+                Expires = DateTime.UtcNow.AddHours(3),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature) // Encriptar e desencriptar o token
             };
 

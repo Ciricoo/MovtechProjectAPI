@@ -34,7 +34,7 @@ namespace MovtechProject.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult<Form>> CreateForms(Form forms)
         {
             Form created = await _formsService.CreateFormsAsync(forms);
@@ -42,7 +42,7 @@ namespace MovtechProject.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Policy = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> UpdateForms(int id, Form form)
         {
             bool updated = await _formsService.UpdateFormsAsync(id, form);
@@ -50,7 +50,7 @@ namespace MovtechProject.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Policy = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> DeleteForms(int id)
         {
             bool deleted = await _formsService.DeleteFormsAsync(id);
