@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using MovtechProject.Domain.Models;
 using MovtechProject.Services;
 
-
 namespace MovtechProject.Controllers
 {
     [Route("api/[controller]")]

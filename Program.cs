@@ -48,7 +48,7 @@ builder.Services.AddAuthentication(options => // Configuração de autentificação,
 }).AddJwtBearer(options => // 
 {
     options.RequireHttpsMetadata = false; // não precisa do https
-    options.SaveToken = true;
+    options.SaveToken = true;                                                                                                                                                                                                                                                                                                            
     options.TokenValidationParameters = new TokenValidationParameters // parametros para efetuar a validação do token
     {
         ValidateIssuerSigningKey = true, // validar a chave

@@ -2,9 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MovtechProject.Domain.Models;
 using MovtechProject.Services;
-using System.Collections.Concurrent;
-
-
 
 namespace MovtechProject.Controllers
 {
@@ -32,7 +29,6 @@ namespace MovtechProject.Controllers
         public async Task<ActionResult<User>> GetUserById(int id)
         {
             User getId = await _userService.GetUserByIdAsync(id);
-            
             return Ok(getId);
         }
 

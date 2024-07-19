@@ -54,7 +54,7 @@ namespace MovtechProject.DataAcess.Repositories
 
                 using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {
-                    while (await reader.ReadAsync())
+                    if  (await reader.ReadAsync())
                     {
                         Users = new User
                         {

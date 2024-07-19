@@ -86,16 +86,15 @@ namespace MovtechProject._3___Domain.CommandHandlers
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler(); // Classe que gera o token
             var key = Encoding.ASCII.GetBytes("43e4dbf0-52ed-4203-895d-42b586496bd4"); // Transformando a chave em um array de bites
 
-            SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor // Descreve informações importantes para o token funcionar
+            SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[] // Coleção de afirmações sobre o usuário
                 {
                     new Claim(ClaimTypes.Name, loginUser.Name),
                     new Claim(ClaimTypes.Role, loginUser.Type.ToString())
-                   
                 }),
-                Expires = DateTime.UtcNow.AddHours(3),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature) // Encriptar e desencriptar o token
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature) // Segurança do token
             };
 
             SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);

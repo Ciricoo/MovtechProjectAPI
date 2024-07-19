@@ -32,9 +32,7 @@ namespace MovtechProject.DataAcess.Repositories
                             Id = (int)reader["id"],
                             Text = reader.GetString("texto"),
                             IdForms = (int)reader["idFormulario"],
-                            Answers = new List<Answer>()
                         });
-
                     }
                 }
             }
@@ -61,7 +59,6 @@ namespace MovtechProject.DataAcess.Repositories
                             Id = (int)reader["id"],
                             Text = reader.GetString("texto"),
                             IdForms = (int)reader["idFormulario"],
-                            Answers = new List<Answer>()
                         };
                     }
                 }
@@ -135,7 +132,6 @@ namespace MovtechProject.DataAcess.Repositories
                             Id = (int)reader["id"],
                             Text = reader.GetString("texto"),
                             IdForms = (int)reader["idFormulario"],
-                            Answers = new List<Answer>()
                         });
                     }
                 }

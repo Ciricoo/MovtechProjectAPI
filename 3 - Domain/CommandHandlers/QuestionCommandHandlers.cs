@@ -1,6 +1,5 @@
 ﻿using MovtechProject.DataAcess.Repositories;
 using MovtechProject.Domain.Models;
-using MovtechProject.Services;
 
 namespace MovtechProject._3___Domain.CommandHandlers
 {
