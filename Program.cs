@@ -44,17 +44,17 @@ string jwtSecretKey = "43e4dbf0-52ed-4203-895d-42b586496bd4";
 builder.Logging.AddConsole();
 builder.Services.AddAuthentication(options => // Configuração de autentificação, vai procurar a cada requisição para ver se o token existe
 {
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; // Especifica que o esquema de autenticação padrão deve ser o JWT Bearer
 }).AddJwtBearer(options => // 
 {
-    options.RequireHttpsMetadata = false; // não precisa do https
+    options.RequireHttpsMetadata = false; // permite que o middleware aceite tokens em requisições HTTP, além de HTTPS
     options.SaveToken = true;                                                                                                                                                                                                                                                                                                            
     options.TokenValidationParameters = new TokenValidationParameters // parametros para efetuar a validação do token
     {
         ValidateIssuerSigningKey = true, // validar a chave
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey)), // passando qual chave ele irá usar para validar, e pegando os bites das chaves
-        ValidateIssuer = false,
-        ValidateAudience = false,
+        ValidateIssuer = false, // valida o emissor
+        ValidateAudience = false, // valida o receptor
     };
 });
 

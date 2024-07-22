@@ -94,7 +94,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
                     new Claim(ClaimTypes.Role, loginUser.Type.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature) // Segurança do token
+                 // Segurança do token
             };
 
             SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
