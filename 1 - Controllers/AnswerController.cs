@@ -40,5 +40,12 @@ namespace MovtechProject.Controllers
             return Ok(created);
         }
 
+        [HttpGet("/UserId/{userId}")]
+        [Authorize(Roles = "Administrador")]
+        public async Task<ActionResult<List<Answer>>> GetAnswerByUserIdAsync(int userId)
+        {
+            List<Answer> get = await _answerService.GetAnswerByUserIdAsync(userId);
+            return Ok(get);
+        }
     }
 }

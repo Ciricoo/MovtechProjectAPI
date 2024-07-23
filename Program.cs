@@ -7,7 +7,6 @@ using MovtechProject.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-var configuration = builder.Configuration;
 
 // Add services to the container.
 
@@ -40,14 +39,14 @@ builder.Services.AddScoped<UserRepository>();
 
 string jwtSecretKey = "43e4dbf0-52ed-4203-895d-42b586496bd4";
 
-//JWT Authentication configuration0
+//JWT Authentication configuration
 builder.Logging.AddConsole();
 builder.Services.AddAuthentication(options => // Configuração de autentificação, vai procurar a cada requisição para ver se o token existe
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; // Especifica que o esquema de autenticação padrão deve ser o JWT Bearer
 }).AddJwtBearer(options => // 
 {
-    options.RequireHttpsMetadata = false; // permite que o middleware aceite tokens em requisições HTTP, além de HTTPS
+    options.RequireHttpsMetadata = false; // aceita tokens em requisições HTTP, além de HTTPS
     options.SaveToken = true;                                                                                                                                                                                                                                                                                                            
     options.TokenValidationParameters = new TokenValidationParameters // parametros para efetuar a validação do token
     {

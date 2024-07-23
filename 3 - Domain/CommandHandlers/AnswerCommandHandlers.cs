@@ -1,5 +1,6 @@
 ﻿using MovtechProject.DataAcess.Repositories;
 using MovtechProject.Domain.Models;
+using System.Collections.Generic;
 
 namespace MovtechProject._3___Domain.CommandHandlers
 {
@@ -67,6 +68,37 @@ namespace MovtechProject._3___Domain.CommandHandlers
             }
 
             return await _answerRepository.CreateAnswersAsync(answers);
+        }
+
+        public async Task<List<Answer>> GetAnswerByUserIdAsync(int idUser)
+        {
+            List<Answer> answers = await _answerRepository.GetAnswersAsync();
+
+            if (!answers.Any())
+            {
+                throw new ArgumentNullException("Não existe nenhuma resposta!");
+            }
+
+            if (idUser <= 0)
+            {
+                throw new ArgumentException("ID inválido!", nameof(idUser));
+            }
+
+            User? user = await _userRepository.GetUserByIdAsync(idUser);
+
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"Id {idUser} do usuário não encontrado!");
+            }
+
+            List<Answer> listUserId = await _answerRepository.GetAnswerByUserIdAsync(idUser);
+
+            if(!listUserId.Any())
+            {
+                throw new ArgumentNullException("Esse usuário não possui nenhuma resposta!");
+            }
+
+            return listUserId;
         }
     }
 }

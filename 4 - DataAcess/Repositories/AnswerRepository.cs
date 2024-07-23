@@ -101,6 +101,34 @@ namespace MovtechProject.DataAcess.Repositories
                 return rowsAffected > 0;
             }
         }
+
+        public async Task<List<Answer>> GetAnswerByUserIdAsync(int idUser)
+        {
+            List<Answer> answerUser = new List<Answer>();
+
+            using (SqlConnection connection = _database.GetConnection())
+            {
+                await connection.OpenAsync();
+                SqlCommand command = new SqlCommand("SELECT * FROM respostas WHERE idUsuario = @idUsuario", connection);
+                command.Parameters.AddWithValue("@idUsuario", idUser);
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        answerUser.Add(new Answer()
+                        {
+                            Id = (int)reader["id"],
+                            Grade = (int)reader["nota"],
+                            Description = reader.GetString("descricao"),
+                            IdQuestion = (int)reader["idPerguntas"],
+                            IdUser = (int)reader["idUsuario"]
+                        });
+                    }
+                }
+            }
+            return answerUser;
+        }
     }
 }
 

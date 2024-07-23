@@ -94,7 +94,8 @@ namespace MovtechProject._3___Domain.CommandHandlers
                     new Claim(ClaimTypes.Role, loginUser.Type.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
-                 // Segurança do token
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature) // HmacSha256Signature valida a autenticidade do token
+                // SymmetricSecurityKey(key) cria uma nova chave de segurança simétrica usando o valor de key.
             };
 
             SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
