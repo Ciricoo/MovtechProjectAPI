@@ -34,13 +34,13 @@ namespace MovtechProject.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<Answer>> CreateAnswers(Answer answers)
+        public async Task<ActionResult<List<Answer>>> CreateAnswers(List<Answer> answers)
         {
-            Answer created = await _answerService.CreateAnswersAsync(answers);
+            List<Answer> created = await _answerService.CreateAnswersAsync(answers);
             return Ok(created);
         }
 
-        [HttpGet("/UserId/{userId}")]
+        [HttpGet("UserId/{userId}")]
         [Authorize(Roles = "Administrador")]
         public async Task<ActionResult<List<Answer>>> GetAnswerByUserIdAsync(int userId)
         {

@@ -70,20 +70,20 @@ namespace MovtechProject.DataAcess.Repositories
             return Users;
         }
 
-        public async Task<User> CreateUsersAsync(User users)
+        public async Task<User> CreateUsersAsync(User user)
         {
             using (SqlConnection connection = _database.GetConnection())
             {
                 await connection.OpenAsync();
                 SqlCommand command = new SqlCommand("INSERT INTO usuarios (nome, senha, tipo) VALUES (@nome, @senha, @tipo); SELECT SCOPE_IDENTITY();", connection);
-                command.Parameters.AddWithValue("@nome", users.Name);
-                command.Parameters.AddWithValue("@senha", users.Password);
-                command.Parameters.AddWithValue("@tipo", users.Type.ToString());
+                command.Parameters.AddWithValue("@nome", user.Name);
+                command.Parameters.AddWithValue("@senha", user.Password);
+                command.Parameters.AddWithValue("@tipo", user.Type.ToString());
 
                 var insertedId = await command.ExecuteScalarAsync();
-                users.Id = Convert.ToInt32(insertedId);
+                user.Id = Convert.ToInt32(insertedId);
 
-                return users;
+                return user;
             }
         }
     }

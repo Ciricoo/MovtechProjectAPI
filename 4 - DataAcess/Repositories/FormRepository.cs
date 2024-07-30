@@ -106,7 +106,7 @@ namespace MovtechProject.DataAcess.Repositories
             {
                 await connection.OpenAsync();
                 SqlCommand command = new SqlCommand("DELETE FROM formulario WHERE @id = id", connection);
-                command.Parameters.AddWithValue("@id", id);
+                command.Parameters.AddWithValue("@id", id);               
 
                 int rowAffected = await command.ExecuteNonQueryAsync();
                 return rowAffected > 0;

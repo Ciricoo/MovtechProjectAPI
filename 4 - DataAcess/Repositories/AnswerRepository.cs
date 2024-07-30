@@ -71,20 +71,34 @@ namespace MovtechProject.DataAcess.Repositories
             return answer;
         }
 
-        public async Task<Answer> CreateAnswersAsync(Answer answers)
+        public async Task<List<Answer>> CreateAnswersAsync(List<Answer> answers)
         {
             using (SqlConnection connection = _database.GetConnection())
             {
                 await connection.OpenAsync();
-                SqlCommand command = new SqlCommand("INSERT INTO respostas (nota, descricao, idPerguntas, idUsuario) " +
-                    "VALUES (@nota, @descricao, @idPerguntas, @idUsuario) SELECT SCOPE_IDENTITY()", connection);
-                command.Parameters.AddWithValue("@nota", answers.Grade);
-                command.Parameters.AddWithValue("@descricao", answers.Description);
-                command.Parameters.AddWithValue("@idPerguntas", answers.IdQuestion);
-                command.Parameters.AddWithValue("@idUsuario", answers.IdUser);
 
-                var insertedId = await command.ExecuteScalarAsync();
-                answers.Id = Convert.ToInt32(insertedId);
+                DataTable dt = new DataTable();
+                dt.Columns.Add("nota", typeof(int));
+                dt.Columns.Add("descricao", typeof(string));
+                dt.Columns.Add("idPerguntas", typeof(int));
+                dt.Columns.Add("idUsuario", typeof(int));
+
+                foreach (var answer in answers)
+                {
+                    dt.Rows.Add(answer.Grade, answer.Description, answer.IdQuestion, answer.IdUser);
+                }
+
+                using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection))
+                {
+                    bulkCopy.DestinationTableName = "respostas";
+                    bulkCopy.ColumnMappings.Add("nota", "nota");
+                    bulkCopy.ColumnMappings.Add("descricao", "descricao");
+                    bulkCopy.ColumnMappings.Add("idPerguntas", "idPerguntas");
+                    bulkCopy.ColumnMappings.Add("idUsuario", "idUsuario");
+
+                    await bulkCopy.WriteToServerAsync(dt);
+                }
+
                 return answers;
             }
         }

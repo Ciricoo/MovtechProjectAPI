@@ -45,5 +45,12 @@ namespace MovtechProject.Controllers
             string token = await _userService.UserLogin(loginUser);
             return Ok(token);
         }
+
+        [HttpPost("logout")]
+        public async Task<ActionResult> Logout()
+        {
+            await _userService.Logout(HttpContext);
+            return Ok("Logout concluido");
+        }
     }
 }

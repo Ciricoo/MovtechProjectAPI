@@ -51,7 +51,7 @@ namespace MovtechProject.DataAcess.Repositories
                 using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {
                     if (await reader.ReadAsync())
-                    {
+                    {                    
                         formsGroup = new FormGroup
                         {
                             Id = (int)reader["id"],

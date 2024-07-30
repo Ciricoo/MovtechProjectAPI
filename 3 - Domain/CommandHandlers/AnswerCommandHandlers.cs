@@ -46,25 +46,28 @@ namespace MovtechProject._3___Domain.CommandHandlers
             return answers;
         }
 
-        public async Task<Answer> CreateAnswersAsync(Answer answers)
+        public async Task<List<Answer>> CreateAnswersAsync(List<Answer> answers)
         {
-            if (answers.Grade < 0 || answers.Grade > 10)
+            foreach (Answer answer in answers)
             {
-                throw new ArgumentException("Nota inválida!", nameof(answers.Grade));
+            if (answer.Grade < 0 || answer.Grade > 10)
+            {
+                throw new ArgumentException("Nota inválida!", nameof(answer.Grade));
             }
 
-            Question? FkQuestion = await _questionRepository.GetQuestionsByIdAsync(answers.IdQuestion);
+            Question? FkQuestion = await _questionRepository.GetQuestionsByIdAsync(answer.IdQuestion);
 
             if (FkQuestion == null)
             {
-                throw new KeyNotFoundException($"FK de perguntas {answers.IdQuestion} inválida!");
+                throw new KeyNotFoundException($"FK de perguntas {answer.IdQuestion} inválida!");
             }
 
-            User? FkUser = await _userRepository.GetUserByIdAsync(answers.IdUser);
+            User? FkUser = await _userRepository.GetUserByIdAsync(answer.IdUser);
 
             if (FkUser == null)
             {
-                throw new KeyNotFoundException($"FK de usuário {answers.IdUser} inválida!");
+                throw new KeyNotFoundException($"FK de usuário {answer.IdUser} inválida!");
+            }
             }
 
             return await _answerRepository.CreateAnswersAsync(answers);

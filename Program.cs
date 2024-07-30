@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using MovtechProject._3___Domain.CommandHandlers;
+using MovtechProject._3___Domain.Middleware;
 using MovtechProject.DataAcess.Data;
 using MovtechProject.DataAcess.Repositories;
 using MovtechProject.Services;
@@ -15,8 +16,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-string connectionString = builder.Configuration.GetConnectionString("DefaultConnection"); // pega a conexão do appSettings pelo DefaultConnection
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!; // pega a conexão do appSettings pelo DefaultConnection
 builder.Services.AddSingleton(new Database(connectionString));// AddSingleton indica que uma única instância da classe Database será criada e usada durante toda a vida útil da aplicação
+builder.Services.AddSingleton<HashSet<string>>();
+builder.Services.AddSingleton<TokenCommandHandlers>();
 
 builder.Services.AddScoped<FormGroupService>();
 builder.Services.AddScoped<FormService>();
@@ -67,6 +70,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseMiddleware<TokenMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();

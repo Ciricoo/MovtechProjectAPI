@@ -22,7 +22,7 @@ namespace MovtechProject.Services
             return await _answerCommandHandlers.GetAnswersByIdAsync(id);
         }
 
-        public async Task<Answer> CreateAnswersAsync(Answer answers)
+        public async Task<List<Answer>> CreateAnswersAsync(List<Answer> answers)
         {
             return await _answerCommandHandlers.CreateAnswersAsync(answers);
         }
