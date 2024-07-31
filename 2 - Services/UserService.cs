@@ -3,12 +3,10 @@
 public class UserService
 {
     private readonly UserCommandHandlers _userCommandHandlers;
-    private readonly TokenCommandHandlers _tokenCommandHandlers;
 
-    public UserService(UserCommandHandlers userCommandHandlers, TokenCommandHandlers tokenCommandHandlers)
+    public UserService(UserCommandHandlers userCommandHandlers)
     {
         _userCommandHandlers = userCommandHandlers;
-        _tokenCommandHandlers = tokenCommandHandlers;
     }
 
     public async Task<List<User>> GetUsersAsync()
@@ -26,12 +24,18 @@ public class UserService
         return await _userCommandHandlers.CreateUsersAsync(users);
     }
 
-    public async Task<string> UserLogin(User loginUser)
+    public async Task<(string, string)> UserLogin(User loginUser)
     {
         return await _userCommandHandlers.UserLogin(loginUser);
     }
-    public async Task Logout(HttpContext token)
+
+    public async Task Logout(HttpContext httpContext)
     {
-        await _tokenCommandHandlers.RevokeToken(token);
+        await _userCommandHandlers.Logout(httpContext);
+    }
+
+    public bool ValidateRefreshToken(string refreshToken, out string newJwtToken, out string newRefreshToken)
+    {
+        return _userCommandHandlers.ValidateRefreshToken(refreshToken, out newJwtToken, out newRefreshToken);
     }
 }

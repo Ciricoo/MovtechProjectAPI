@@ -18,7 +18,7 @@ namespace MovtechProject._3___Domain.Middleware
             {
                 await _next(httpContext);
                 return;
-            }
+            } 
 
             var token = httpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 

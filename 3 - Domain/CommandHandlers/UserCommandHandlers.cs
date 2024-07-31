@@ -1,8 +1,6 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using MovtechProject._3___Domain.CommandHandlers;
-using MovtechProject.DataAcess.Repositories;
-using MovtechProject.Domain.Models.Enums;
+﻿using MovtechProject.DataAcess.Repositories;
 using MovtechProject.Domain.Models;
+using MovtechProject.Domain.Models.Enums;
 
 public class UserCommandHandlers
 {
@@ -65,7 +63,7 @@ public class UserCommandHandlers
         return await _userRepository.CreateUsersAsync(users);
     }
 
-    public async Task<string> UserLogin(User loginUser)
+    public async Task<(string token, string refreshToken)> UserLogin(User loginUser)
     {
         List<User> users = await _userRepository.GetUsersAsync();
         User? user = users.FirstOrDefault(u => u.Name == loginUser.Name && u.Password == loginUser.Password);
@@ -75,12 +73,22 @@ public class UserCommandHandlers
             throw new InvalidOperationException("Credenciais inválidas");
         }
 
-        if (_tokenCommandHandlers.IsUserLoggedIn(user.Id))
+        if (_tokenCommandHandlers.IsUserLoggedIn())
         {
             throw new InvalidOperationException("O usuário já está logado.");
         }
 
-        string token = _tokenCommandHandlers.GenerateToken(user);
-        return token;
+        string token = _tokenCommandHandlers.GenerateToken(user, out string refreshToken);
+        return (token, refreshToken);
+    }
+
+    public async Task Logout(HttpContext httpContext)
+    {
+        await _tokenCommandHandlers.RevokeToken(httpContext);
+    }
+
+    public bool ValidateRefreshToken(string refreshToken, out string newJwtToken, out string newRefreshToken)
+    {
+        return _tokenCommandHandlers.ValidateRefreshToken(refreshToken, out newJwtToken, out newRefreshToken);
     }
 }

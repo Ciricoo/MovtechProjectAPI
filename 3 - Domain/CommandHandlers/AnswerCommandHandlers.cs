@@ -1,6 +1,7 @@
 ﻿using MovtechProject.DataAcess.Repositories;
 using MovtechProject.Domain.Models;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace MovtechProject._3___Domain.CommandHandlers
 {
@@ -9,7 +10,6 @@ namespace MovtechProject._3___Domain.CommandHandlers
         private readonly UserRepository _userRepository;
         private readonly QuestionRepository _questionRepository;
         private readonly AnswerRepository _answerRepository;
-
         public AnswerCommandHandlers(UserRepository userRepository,QuestionRepository questionRepository, AnswerRepository answerRepository)
         {
             _userRepository = userRepository;
@@ -46,8 +46,13 @@ namespace MovtechProject._3___Domain.CommandHandlers
             return answers;
         }
 
-        public async Task<List<Answer>> CreateAnswersAsync(List<Answer> answers)
+        public async Task<List<Answer>> CreateAnswersAsync(List<Answer> answers, HttpContext context)
         {
+            var id = context.User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            var idUser = Convert.ToInt32(id);
+
+            
             foreach (Answer answer in answers)
             {
             if (answer.Grade < 0 || answer.Grade > 10)
@@ -62,12 +67,8 @@ namespace MovtechProject._3___Domain.CommandHandlers
                 throw new KeyNotFoundException($"FK de perguntas {answer.IdQuestion} inválida!");
             }
 
-            User? FkUser = await _userRepository.GetUserByIdAsync(answer.IdUser);
+            answer.IdUser = idUser;
 
-            if (FkUser == null)
-            {
-                throw new KeyNotFoundException($"FK de usuário {answer.IdUser} inválida!");
-            }
             }
 
             return await _answerRepository.CreateAnswersAsync(answers);

@@ -36,7 +36,7 @@ namespace MovtechProject.Controllers
         [Authorize]
         public async Task<ActionResult<List<Answer>>> CreateAnswers(List<Answer> answers)
         {
-            List<Answer> created = await _answerService.CreateAnswersAsync(answers);
+            List<Answer> created = await _answerService.CreateAnswersAsync(answers, HttpContext);
             return Ok(created);
         }
 
