@@ -29,9 +29,9 @@ public class UserService
         return await _userCommandHandlers.UserLogin(loginUser);
     }
 
-    public async Task Logout(HttpContext httpContext)
+    public void Logout(HttpContext httpContext)
     {
-        await _userCommandHandlers.Logout(httpContext);
+         _userCommandHandlers.Logout(httpContext);
     }
 
     public bool ValidateRefreshToken(string refreshToken, out string newJwtToken, out string newRefreshToken)

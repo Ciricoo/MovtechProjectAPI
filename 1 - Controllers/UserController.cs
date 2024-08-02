@@ -44,20 +44,16 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("logout")]
-    public async Task<ActionResult> Logout()
+    public ActionResult Logout()
     {
-        await _userService.Logout(HttpContext);
+        _userService.Logout(HttpContext);
         return Ok("Logout concluido");
     }
 
     [HttpPost("refresh")]
     public ActionResult RefreshToken([FromBody] string refreshToken)
     {
-        if (_userService.ValidateRefreshToken(refreshToken, out string newJwtToken, out string newRefreshToken))
-        {
-            return Ok(new { token = newJwtToken, refreshToken = newRefreshToken });
-        }
-
-        return Unauthorized("Token de refresh inválido");
+        _userService.ValidateRefreshToken(refreshToken, out string newJwtToken, out string newRefreshToken);
+        return Ok(new { token = newJwtToken, refreshToken = newRefreshToken });
     }
 }

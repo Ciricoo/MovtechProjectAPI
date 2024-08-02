@@ -67,6 +67,11 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             foreach (Question question in forms.Questions)
             {
+                if (string.IsNullOrWhiteSpace(question.Text))
+                {
+                    throw new ArgumentException("O texto da pergunta não pode ser vazio!", question.Text);
+                }
+
                 question.IdForms = createdForms.Id;
                 await _questionRepository.CreateQuestionsAsync(question);
             }

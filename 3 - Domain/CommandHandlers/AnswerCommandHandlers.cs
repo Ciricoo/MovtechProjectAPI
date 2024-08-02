@@ -1,6 +1,5 @@
 ﻿using MovtechProject.DataAcess.Repositories;
 using MovtechProject.Domain.Models;
-using System.Collections.Generic;
 using System.Security.Claims;
 
 namespace MovtechProject._3___Domain.CommandHandlers
@@ -48,9 +47,9 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
         public async Task<List<Answer>> CreateAnswersAsync(List<Answer> answers, HttpContext context)
         {
-            var id = context.User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            string id = context.User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
-            var idUser = Convert.ToInt32(id);
+            int idUser = Convert.ToInt32(id);
 
             
             foreach (Answer answer in answers)

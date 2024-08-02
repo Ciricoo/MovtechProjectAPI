@@ -82,13 +82,20 @@ public class UserCommandHandlers
         return (token, refreshToken);
     }
 
-    public async Task Logout(HttpContext httpContext)
+    public void Logout(HttpContext httpContext)
     {
-        await _tokenCommandHandlers.RevokeToken(httpContext);
+        _tokenCommandHandlers.RevokeToken(httpContext);
     }
 
     public bool ValidateRefreshToken(string refreshToken, out string newJwtToken, out string newRefreshToken)
     {
-        return _tokenCommandHandlers.ValidateRefreshToken(refreshToken, out newJwtToken, out newRefreshToken);
+        bool validateRefresh =  _tokenCommandHandlers.ValidateRefreshToken(refreshToken, out newJwtToken, out newRefreshToken);
+
+        if (!validateRefresh)
+        {
+            throw new ArgumentException("Token de refresh inválido");
+        }
+
+        return validateRefresh;
     }
 }

@@ -1,5 +1,4 @@
-﻿using MovtechProject.Domain.Models;
-
+﻿
 namespace MovtechProject._3___Domain.Middleware
 {
     public class TokenMiddleware
@@ -12,7 +11,7 @@ namespace MovtechProject._3___Domain.Middleware
 
         public async Task InvokeAsync(HttpContext httpContext, TokenCommandHandlers RevokeToken)
         {
-            var path = httpContext.Request.Path.Value?.ToLower();
+            string path = httpContext.Request.Path.Value!.ToLower();
 
             if (path == "/api/user/login" || path == "/api/user/")
             {
@@ -20,9 +19,9 @@ namespace MovtechProject._3___Domain.Middleware
                 return;
             } 
 
-            var token = httpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            string token = httpContext.Request.Headers["Authorization"].FirstOrDefault()!.Split(" ").Last();
 
-            if(token != null && RevokeToken.IsTokenRevoked(token))
+            if(token == null || RevokeToken.IsTokenRevoked(token))
             {
                 httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized; return;
             }

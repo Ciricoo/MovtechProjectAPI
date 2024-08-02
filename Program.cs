@@ -18,7 +18,6 @@ builder.Services.AddSwaggerGen();
 
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!; // pega a conexão do appSettings pelo DefaultConnection
 builder.Services.AddSingleton(new Database(connectionString));// AddSingleton indica que uma única instância da classe Database será criada e usada durante toda a vida útil da aplicação
-builder.Services.AddSingleton<HashSet<string>>();
 builder.Services.AddSingleton<TokenCommandHandlers>();
 
 builder.Services.AddScoped<FormGroupService>();

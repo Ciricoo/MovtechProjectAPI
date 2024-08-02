@@ -1,4 +1,5 @@
-﻿using MovtechProject.DataAcess.Repositories;
+﻿using Microsoft.SqlServer.Server;
+using MovtechProject.DataAcess.Repositories;
 using MovtechProject.Domain.Models;
 
 namespace MovtechProject._3___Domain.CommandHandlers
@@ -60,8 +61,33 @@ namespace MovtechProject._3___Domain.CommandHandlers
             {
                 throw new ArgumentException("O nome do grupo é inválido!", formsGroup.Name);
             }
+            
+            FormGroup createdGroup = await _formsGroupRepository.CreateFormsGroupAsync(formsGroup);
 
-            return await _formsGroupRepository.CreateFormsGroupAsync(formsGroup);
+            foreach (Form form in formsGroup.Forms)
+            {
+                if (string.IsNullOrWhiteSpace(form.Name))
+                {
+                    throw new ArgumentException("O texto da pergunta não pode ser vazio!", form.Name);
+                }
+
+                form.IdFormsGroup = createdGroup.Id;
+                await _formsRepository.CreateFormsAsync(form);
+
+                foreach (Question question in form.Questions)
+                {
+                    if (string.IsNullOrWhiteSpace(question.Text))
+                    {
+                        throw new ArgumentException("O texto da pergunta não pode ser vazio!", question.Text);
+                    }
+
+                    question.IdForms = form.Id;
+                    await _questionsRepository.CreateQuestionsAsync(question);
+                }
+
+            }
+
+            return createdGroup;  
         }
 
         public async Task<bool> UpdateFormsGroupAsync(int id, FormGroup formsGroup)
@@ -119,4 +145,3 @@ namespace MovtechProject._3___Domain.CommandHandlers
         }
     }
 }
-

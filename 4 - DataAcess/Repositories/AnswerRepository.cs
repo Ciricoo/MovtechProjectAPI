@@ -83,7 +83,7 @@ namespace MovtechProject.DataAcess.Repositories
                 dt.Columns.Add("idPerguntas", typeof(int));
                 dt.Columns.Add("idUsuario", typeof(int));
 
-                foreach (var answer in answers)
+                foreach (Answer answer in answers)
                 {
                     dt.Rows.Add(answer.Grade, answer.Description, answer.IdQuestion, answer.IdUser);
                 }
