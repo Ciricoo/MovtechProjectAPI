@@ -25,7 +25,7 @@ public class TokenCommandHandlers
                 new Claim(ClaimTypes.Role, loginUser.Type.ToString()),
                 new Claim(ClaimTypes.NameIdentifier, loginUser.Id.ToString())
             }),
-            Expires = DateTime.UtcNow.AddMinutes(15),
+            Expires = DateTime.UtcNow.AddHours(8),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)// HmacSha256Signature valida a autenticidade do token
             // SymmetricSecurityKey(key) cria uma nova chave de segurança simétrica usando o valor de key.
         };

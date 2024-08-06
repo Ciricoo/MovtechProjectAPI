@@ -89,7 +89,7 @@ public class UserCommandHandlers
 
     public bool ValidateRefreshToken(string refreshToken, out string newJwtToken, out string newRefreshToken)
     {
-        bool validateRefresh =  _tokenCommandHandlers.ValidateRefreshToken(refreshToken, out newJwtToken, out newRefreshToken);
+        bool validateRefresh = _tokenCommandHandlers.ValidateRefreshToken(refreshToken, out newJwtToken, out newRefreshToken);
 
         if (!validateRefresh)
         {

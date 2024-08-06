@@ -61,33 +61,37 @@ namespace MovtechProject._3___Domain.CommandHandlers
             {
                 throw new ArgumentException("O nome do grupo é inválido!", formsGroup.Name);
             }
-            
-            FormGroup createdGroup = await _formsGroupRepository.CreateFormsGroupAsync(formsGroup);
 
             foreach (Form form in formsGroup.Forms)
             {
                 if (string.IsNullOrWhiteSpace(form.Name))
                 {
-                    throw new ArgumentException("O texto da pergunta não pode ser vazio!", form.Name);
+                    throw new ArgumentException("O texto do formulário não pode ser vazio!");
                 }
 
+                if (form.Questions.Where(x => x.Text.Trim() == "").Any())
+                {
+                    throw new ArgumentException("O texto da pergunta não pode ser vazio!");
+                }
+            }
+
+            FormGroup createdGroup = await _formsGroupRepository.CreateFormsGroupAsync(formsGroup);
+
+            foreach (Form form in formsGroup.Forms)
+            {
                 form.IdFormsGroup = createdGroup.Id;
                 await _formsRepository.CreateFormsAsync(form);
 
+
                 foreach (Question question in form.Questions)
                 {
-                    if (string.IsNullOrWhiteSpace(question.Text))
-                    {
-                        throw new ArgumentException("O texto da pergunta não pode ser vazio!", question.Text);
-                    }
-
                     question.IdForms = form.Id;
                     await _questionsRepository.CreateQuestionsAsync(question);
                 }
 
             }
 
-            return createdGroup;  
+            return createdGroup;
         }
 
         public async Task<bool> UpdateFormsGroupAsync(int id, FormGroup formsGroup)
@@ -111,7 +115,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             return await _formsGroupRepository.UpdateFormsGroupAsync(id, formsGroup);
         }
-         
+
         public async Task<bool> DeleteFormsGroupAsync(int id)
         {
             if (id <= 0)

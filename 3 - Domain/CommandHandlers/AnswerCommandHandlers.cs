@@ -9,7 +9,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
         private readonly UserRepository _userRepository;
         private readonly QuestionRepository _questionRepository;
         private readonly AnswerRepository _answerRepository;
-        public AnswerCommandHandlers(UserRepository userRepository,QuestionRepository questionRepository, AnswerRepository answerRepository)
+        public AnswerCommandHandlers(UserRepository userRepository, QuestionRepository questionRepository, AnswerRepository answerRepository)
         {
             _userRepository = userRepository;
             _questionRepository = questionRepository;
@@ -51,22 +51,22 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             int idUser = Convert.ToInt32(id);
 
-            
+
             foreach (Answer answer in answers)
             {
-            if (answer.Grade < 0 || answer.Grade > 10)
-            {
-                throw new ArgumentException("Nota inválida!", nameof(answer.Grade));
-            }
+                if (answer.Grade < 0 || answer.Grade > 10)
+                {
+                    throw new ArgumentException("Nota inválida!", nameof(answer.Grade));
+                }
 
-            Question? FkQuestion = await _questionRepository.GetQuestionsByIdAsync(answer.IdQuestion);
+                Question? FkQuestion = await _questionRepository.GetQuestionsByIdAsync(answer.IdQuestion);
 
-            if (FkQuestion == null)
-            {
-                throw new KeyNotFoundException($"FK de perguntas {answer.IdQuestion} inválida!");
-            }
+                if (FkQuestion == null)
+                {
+                    throw new KeyNotFoundException($"FK de perguntas {answer.IdQuestion} inválida!");
+                }
 
-            answer.IdUser = idUser;
+                answer.IdUser = idUser;
 
             }
 
@@ -96,7 +96,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             List<Answer> listUserId = await _answerRepository.GetAnswerByUserIdAsync(idUser);
 
-            if(!listUserId.Any())
+            if (!listUserId.Any())
             {
                 throw new ArgumentNullException("Esse usuário não possui nenhuma resposta!");
             }

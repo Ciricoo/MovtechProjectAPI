@@ -58,20 +58,20 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             FormGroup? FkFormGroup = await _formGroupRepository.GetFormsGroupByIdAsync(forms.IdFormsGroup);
 
-            if(FkFormGroup == null)
+            if (FkFormGroup == null)
             {
                 throw new KeyNotFoundException($"FK de grupo de formulário {forms.IdFormsGroup} inválida!");
+            }
+
+            if (forms.Questions.Where(x => x.Text.Trim() == "").Any())
+            {
+                throw new ArgumentException("O texto da pergunta não pode ser vazio!");
             }
 
             Form createdForms = await _formsRepository.CreateFormsAsync(forms);
 
             foreach (Question question in forms.Questions)
             {
-                if (string.IsNullOrWhiteSpace(question.Text))
-                {
-                    throw new ArgumentException("O texto da pergunta não pode ser vazio!", question.Text);
-                }
-
                 question.IdForms = createdForms.Id;
                 await _questionRepository.CreateQuestionsAsync(question);
             }
