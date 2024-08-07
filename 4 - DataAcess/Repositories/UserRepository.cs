@@ -15,14 +15,15 @@ namespace MovtechProject.DataAcess.Repositories
             _database = database;
         }
 
-        public async Task<List<User>> GetUsersAsync()
+        public async Task<List<User>> GetUserByLoginAsync(string nome)
         {
             List<User> Users = new List<User>();
 
             using (SqlConnection connection = _database.GetConnection())
             {
                 await connection.OpenAsync();
-                SqlCommand command = new SqlCommand("SELECT * FROM usuarios", connection);
+                SqlCommand command = new SqlCommand("SELECT * FROM usuarios WHERE @nome = nome", connection);
+                command.Parameters.AddWithValue("@nome", nome);
 
                 using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {

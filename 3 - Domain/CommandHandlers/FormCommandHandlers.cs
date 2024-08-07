@@ -93,16 +93,16 @@ namespace MovtechProject._3___Domain.CommandHandlers
                 throw new KeyNotFoundException($"Id {id} não encontrado!");
             }
 
+            if (string.IsNullOrWhiteSpace(forms.Name))
+            {
+                throw new ArgumentException("O nome do formulário é inválido!", forms.Name);
+            }
+
             FormGroup? FkFormGroup = await _formGroupRepository.GetFormsGroupByIdAsync(forms.IdFormsGroup);
 
             if (FkFormGroup == null)
             {
                 throw new KeyNotFoundException($"FK de grupo de formulário {forms.IdFormsGroup} inválida!");
-            }
-
-            if (string.IsNullOrWhiteSpace(forms.Name))
-            {
-                throw new ArgumentException("O nome do formulário é inválido!", forms.Name);
             }
 
             return await _formsRepository.UpdateFormsAsync(id, forms);

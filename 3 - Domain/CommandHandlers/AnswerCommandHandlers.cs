@@ -96,11 +96,6 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             List<Answer> listUserId = await _answerRepository.GetAnswerByUserIdAsync(idUser);
 
-            if (!listUserId.Any())
-            {
-                throw new ArgumentNullException("Esse usuário não possui nenhuma resposta!");
-            }
-
             return listUserId;
         }
     }

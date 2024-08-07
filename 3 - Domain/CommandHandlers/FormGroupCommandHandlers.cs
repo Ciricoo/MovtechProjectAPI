@@ -82,13 +82,11 @@ namespace MovtechProject._3___Domain.CommandHandlers
                 form.IdFormsGroup = createdGroup.Id;
                 await _formsRepository.CreateFormsAsync(form);
 
-
                 foreach (Question question in form.Questions)
                 {
                     question.IdForms = form.Id;
-                    await _questionsRepository.CreateQuestionsAsync(question);
+                    await _questionsRepository.CreateQuestionsAsync(question);  
                 }
-
             }
 
             return createdGroup;
@@ -101,6 +99,11 @@ namespace MovtechProject._3___Domain.CommandHandlers
                 throw new ArgumentException("ID inválido!", nameof(id));
             }
 
+            if (string.IsNullOrWhiteSpace(formsGroup.Name))
+            {
+                throw new ArgumentException("O nome do grupo de formulários é inválido!", formsGroup.Name);
+            }
+
             FormGroup? formsGroupUpdateId = await _formsGroupRepository.GetFormsGroupByIdAsync(id);
 
             if (formsGroupUpdateId == null)
@@ -108,10 +111,6 @@ namespace MovtechProject._3___Domain.CommandHandlers
                 throw new KeyNotFoundException($"ID {id} não encontrado!");
             }
 
-            if (string.IsNullOrWhiteSpace(formsGroup.Name))
-            {
-                throw new ArgumentException("O nome do grupo de formulários é inválido!", formsGroup.Name);
-            }
 
             return await _formsGroupRepository.UpdateFormsGroupAsync(id, formsGroup);
         }

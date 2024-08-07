@@ -13,18 +13,6 @@ public class UserCommandHandlers
         _tokenCommandHandlers = tokenCommandHandlers;
     }
 
-    public async Task<List<User>> GetUsersAsync()
-    {
-        List<User> list = await _userRepository.GetUsersAsync();
-
-        if (!list.Any())
-        {
-            throw new ArgumentNullException("Não existe nenhum usuário!");
-        }
-
-        return list;
-    }
-
     public async Task<User> GetUserByIdAsync(int id)
     {
         if (id <= 0)
@@ -44,9 +32,9 @@ public class UserCommandHandlers
 
     public async Task<User> CreateUsersAsync(User users)
     {
-        List<User> usuarios = await _userRepository.GetUsersAsync();
+        List<User> usuarios = await _userRepository.GetUserByLoginAsync(users.Name);
 
-        if (usuarios.Any(u => u.Name == users.Name))
+        if (usuarios.Any())
         {
             throw new ArgumentException("Já existe um usuário com esse nome!", users.Name);
         }
@@ -65,8 +53,8 @@ public class UserCommandHandlers
 
     public async Task<(string token, string refreshToken)> UserLogin(User loginUser)
     {
-        List<User> users = await _userRepository.GetUsersAsync();
-        User? user = users.FirstOrDefault(u => u.Name == loginUser.Name && u.Password == loginUser.Password);
+        List<User> users = await _userRepository.GetUserByLoginAsync(loginUser.Name);
+        User? user = users.FirstOrDefault(u => u.Password == loginUser.Password);
 
         if (user == null)
         {

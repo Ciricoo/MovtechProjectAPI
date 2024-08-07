@@ -9,11 +9,6 @@ public class UserService
         _userCommandHandlers = userCommandHandlers;
     }
 
-    public async Task<List<User>> GetUsersAsync()
-    {
-        return await _userCommandHandlers.GetUsersAsync();
-    }
-
     public async Task<User> GetUserByIdAsync(int id)
     {
         return await _userCommandHandlers.GetUserByIdAsync(id);

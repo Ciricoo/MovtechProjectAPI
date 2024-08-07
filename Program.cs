@@ -53,7 +53,7 @@ builder.Services.AddAuthentication(options => // Configuração de autentificação,
     options.TokenValidationParameters = new TokenValidationParameters // parametros para efetuar a validação do token
     {
         ValidateIssuerSigningKey = true, // validar a chave
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey)), // passando qual chave ele irá usar para validar, e pegando os bites das chaves
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSecretKey)), // passando qual chave ele irá usar para validar, e pegando os bites das chaves
         ValidateIssuer = false, // valida o emissor
         ValidateAudience = false, // valida o receptor
     };

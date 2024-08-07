@@ -14,14 +14,6 @@ public class UserController : ControllerBase
     }
 
     [Authorize(Roles = "Administrador")]
-    [HttpGet]
-    public async Task<ActionResult<List<User>>> GetUsers()
-    {
-        List<User> get = await _userService.GetUsersAsync();
-        return Ok(get);
-    }
-
-    [Authorize(Roles = "Administrador")]
     [HttpGet("{id}")]
     public async Task<ActionResult<User>> GetUserById(int id)
     {
