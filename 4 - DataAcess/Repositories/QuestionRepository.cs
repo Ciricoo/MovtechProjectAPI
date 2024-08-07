@@ -47,8 +47,7 @@ namespace MovtechProject.DataAcess.Repositories
             using (SqlConnection connection = _database.GetConnection())
             {
                 await connection.OpenAsync();
-                SqlCommand command = new SqlCommand("SELECT * FROM perguntas WHERE @id = id", connection);
-                command.Parameters.AddWithValue("@id", id);
+                SqlCommand command = new SqlCommand($"SELECT * FROM perguntas WHERE id = {id}", connection);
 
                 using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {
@@ -73,9 +72,7 @@ namespace MovtechProject.DataAcess.Repositories
             using (SqlConnection connection = _database.GetConnection())
             {
                 await connection.OpenAsync();
-                SqlCommand command = new SqlCommand("INSERT INTO perguntas (texto, idFormulario) VALUES (@texto, @idFormulario); SELECT SCOPE_IDENTITY();", connection);
-                command.Parameters.AddWithValue("@texto", questions.Text);
-                command.Parameters.AddWithValue("@idFormulario", questions.IdForms);
+                SqlCommand command = new SqlCommand($"INSERT INTO perguntas (texto, idFormulario) VALUES ('{questions.Text}', {questions.IdForms}); SELECT SCOPE_IDENTITY();", connection);
 
                 var insertedId = await command.ExecuteScalarAsync();
                 questions.Id = Convert.ToInt32(insertedId);
@@ -89,10 +86,7 @@ namespace MovtechProject.DataAcess.Repositories
             using (SqlConnection connection = _database.GetConnection())
             {
                 await connection.OpenAsync();
-                SqlCommand command = new SqlCommand("UPDATE perguntas SET texto = @texto, idFormulario = @idFormulario WHERE id = @id", connection);
-                command.Parameters.AddWithValue("@id", id);
-                command.Parameters.AddWithValue("@texto", questions.Text);
-                command.Parameters.AddWithValue("@idFormulario", questions.IdForms);
+                SqlCommand command = new SqlCommand($"UPDATE perguntas SET texto = '{questions.Text}', idFormulario = {questions.IdForms} WHERE id = {id}", connection);
 
                 int rowsAffected = await command.ExecuteNonQueryAsync();
                 return rowsAffected > 0;
@@ -104,14 +98,25 @@ namespace MovtechProject.DataAcess.Repositories
             using (SqlConnection connection = _database.GetConnection())
             {
                 await connection.OpenAsync();
-                SqlCommand command = new SqlCommand("DELETE FROM perguntas WHERE @id = id", connection);
-                command.Parameters.AddWithValue("@id", id);
+                SqlCommand command = new SqlCommand($"DELETE FROM perguntas WHERE id = {id}", connection);
 
                 int rowAffected = await command.ExecuteNonQueryAsync();
                 return rowAffected > 0;
             }
         }
 
+        public async Task<bool> DeleteQuestionsIdsAsync(List<int> ids)
+        {
+            using (SqlConnection connection = _database.GetConnection())
+            {
+                await connection.OpenAsync();
+                string idsString = string.Join(", ", ids);
+                SqlCommand command = new SqlCommand($"DELETE FROM perguntas WHERE id in ({idsString})", connection);
+
+                int rowAffected = await command.ExecuteNonQueryAsync();
+                return rowAffected > 0;
+            }
+        }
 
         public async Task<List<Question>> GetQuestionByFormsId(int idForms)
         {
@@ -120,8 +125,7 @@ namespace MovtechProject.DataAcess.Repositories
             using (SqlConnection connection = _database.GetConnection())
             {
                 await connection.OpenAsync();
-                SqlCommand command = new SqlCommand("SELECT * FROM perguntas WHERE @idFormulario = idFormulario", connection);
-                command.Parameters.AddWithValue("@idFormulario", idForms);
+                SqlCommand command = new SqlCommand($"SELECT * FROM perguntas WHERE idFormulario = {idForms}", connection);
 
                 using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {
@@ -133,6 +137,49 @@ namespace MovtechProject.DataAcess.Repositories
                             Text = reader.GetString("texto"),
                             IdForms = (int)reader["idFormulario"],
                         });
+                    }
+                }
+            }
+
+            return Question;
+        }
+
+        public async Task<List<int>> GetQuestionIdsByFormsIds(List<int> idForms)
+        {
+            List<int> Question = new List<int>();
+
+            using (SqlConnection connection = _database.GetConnection())
+            {
+                await connection.OpenAsync();
+                string idsString = string.Join(", ", idForms);
+                SqlCommand command = new SqlCommand($"SELECT * FROM perguntas WHERE idFormulario in ({idsString}) ", connection);
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        Question.Add(reader.GetInt32("id"));
+                    }
+                }
+            }
+
+            return Question;
+        }
+
+        public async Task<List<int>> GetQuestionIdsByFormsId(int idForms)
+        {
+            List<int> Question = new List<int>();
+
+            using (SqlConnection connection = _database.GetConnection())
+            {
+                await connection.OpenAsync();
+                SqlCommand command = new SqlCommand($"SELECT * FROM perguntas WHERE idFormulario = {idForms} ", connection);
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        Question.Add(reader.GetInt32("id"));
                     }
                 }
             }

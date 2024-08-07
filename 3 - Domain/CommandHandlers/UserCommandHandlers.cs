@@ -32,7 +32,7 @@ public class UserCommandHandlers
 
     public async Task<User> CreateUsersAsync(User users)
     {
-        List<User> usuarios = await _userRepository.GetUserByLoginAsync(users.Name);
+        List<User> usuarios = await _userRepository.GetUserByNameAsync (users.Name);
 
         if (usuarios.Any())
         {
@@ -53,7 +53,7 @@ public class UserCommandHandlers
 
     public async Task<(string token, string refreshToken)> UserLogin(User loginUser)
     {
-        List<User> users = await _userRepository.GetUserByLoginAsync(loginUser.Name);
+        List<User> users = await _userRepository.GetUserByNameAsync(loginUser.Name);
         User? user = users.FirstOrDefault(u => u.Password == loginUser.Password);
 
         if (user == null)

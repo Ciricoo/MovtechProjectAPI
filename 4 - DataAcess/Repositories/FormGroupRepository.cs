@@ -45,8 +45,7 @@ namespace MovtechProject.DataAcess.Repositories
             using (SqlConnection connection = _database.GetConnection())
             {
                 await connection.OpenAsync();
-                SqlCommand command = new SqlCommand("SELECT * FROM grupoFormulario WHERE id = @id", connection);
-                command.Parameters.AddWithValue("@id", id);
+                SqlCommand command = new SqlCommand($"SELECT * FROM grupoFormulario WHERE id = {id}", connection);
 
                 using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {
@@ -68,8 +67,7 @@ namespace MovtechProject.DataAcess.Repositories
             using (SqlConnection connection = _database.GetConnection())
             {
                 await connection.OpenAsync();
-                SqlCommand command = new SqlCommand("INSERT INTO grupoFormulario (nome) VALUES (@nome); SELECT SCOPE_IDENTITY();", connection);
-                command.Parameters.AddWithValue("@nome", formsGroup.Name);
+                SqlCommand command = new SqlCommand($"INSERT INTO grupoFormulario (nome) VALUES ('{formsGroup.Name}'); SELECT SCOPE_IDENTITY();", connection);
 
                 var insertedId = await command.ExecuteScalarAsync();
                 formsGroup.Id = Convert.ToInt32(insertedId);
@@ -82,9 +80,7 @@ namespace MovtechProject.DataAcess.Repositories
             using (SqlConnection connection = _database.GetConnection())
             {
                 await connection.OpenAsync();
-                SqlCommand command = new SqlCommand("UPDATE grupoFormulario SET nome = @nome WHERE id = @id", connection);
-                command.Parameters.AddWithValue("@id", id);
-                command.Parameters.AddWithValue("@nome", formsGroup.Name);
+                SqlCommand command = new SqlCommand($"UPDATE grupoFormulario SET nome = '{formsGroup.Name}' WHERE id = {id}", connection);
 
                 int rowsAffected = await command.ExecuteNonQueryAsync();
                 return rowsAffected > 0;

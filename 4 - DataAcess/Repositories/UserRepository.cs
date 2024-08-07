@@ -15,15 +15,14 @@ namespace MovtechProject.DataAcess.Repositories
             _database = database;
         }
 
-        public async Task<List<User>> GetUserByLoginAsync(string nome)
+        public async Task<List<User>> GetUserByNameAsync(string nome)
         {
             List<User> Users = new List<User>();
 
             using (SqlConnection connection = _database.GetConnection())
             {
                 await connection.OpenAsync();
-                SqlCommand command = new SqlCommand("SELECT * FROM usuarios WHERE @nome = nome", connection);
-                command.Parameters.AddWithValue("@nome", nome);
+                SqlCommand command = new SqlCommand($"SELECT * FROM usuarios WHERE nome = '{nome}'", connection);
 
                 using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {
@@ -50,8 +49,7 @@ namespace MovtechProject.DataAcess.Repositories
             using (SqlConnection connection = _database.GetConnection())
             {
                 await connection.OpenAsync();
-                SqlCommand command = new SqlCommand("SELECT * FROM usuarios WHERE @id = id", connection);
-                command.Parameters.AddWithValue("@id", id);
+                SqlCommand command = new SqlCommand($"SELECT * FROM usuarios WHERE id = {id}", connection);
 
                 using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {
@@ -76,10 +74,7 @@ namespace MovtechProject.DataAcess.Repositories
             using (SqlConnection connection = _database.GetConnection())
             {
                 await connection.OpenAsync();
-                SqlCommand command = new SqlCommand("INSERT INTO usuarios (nome, senha, tipo) VALUES (@nome, @senha, @tipo); SELECT SCOPE_IDENTITY();", connection);
-                command.Parameters.AddWithValue("@nome", user.Name);
-                command.Parameters.AddWithValue("@senha", user.Password);
-                command.Parameters.AddWithValue("@tipo", user.Type.ToString());
+                SqlCommand command = new SqlCommand($"INSERT INTO usuarios (nome, senha, tipo) VALUES ('{user.Name}', '{user.Password}', '{user.Type}'); SELECT SCOPE_IDENTITY();", connection);
 
                 var insertedId = await command.ExecuteScalarAsync();
                 user.Id = Convert.ToInt32(insertedId);

@@ -49,8 +49,7 @@ namespace MovtechProject.DataAcess.Repositories
             using (SqlConnection connection = _database.GetConnection())
             {
                 await connection.OpenAsync();
-                SqlCommand command = new SqlCommand("SELECT * FROM respostas WHERE id = @id", connection);
-                command.Parameters.AddWithValue("@id", id);
+                SqlCommand command = new SqlCommand($"SELECT * FROM respostas WHERE id = {id}", connection);
 
                 using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {
@@ -108,8 +107,20 @@ namespace MovtechProject.DataAcess.Repositories
             using (SqlConnection connection = _database.GetConnection())
             {
                 await connection.OpenAsync();
-                SqlCommand command = new SqlCommand("DELETE FROM respostas WHERE idPerguntas = @idPerguntas", connection);
-                command.Parameters.AddWithValue("@idPerguntas", questionId);
+                SqlCommand command = new SqlCommand($"DELETE FROM respostas WHERE idPerguntas = {questionId}", connection);
+
+                int rowsAffected = await command.ExecuteNonQueryAsync();
+                return rowsAffected > 0;
+            }
+        }
+
+        public async Task<bool> DeleteAnswersByQuestionIds(List<int> questionIds)
+        {
+            using (SqlConnection connection = _database.GetConnection())
+            {
+                await connection.OpenAsync();
+                string idsString = string.Join(", ", questionIds);
+                SqlCommand command = new SqlCommand($"DELETE FROM respostas WHERE idPerguntas in ({idsString})", connection);
 
                 int rowsAffected = await command.ExecuteNonQueryAsync();
                 return rowsAffected > 0;
@@ -123,8 +134,7 @@ namespace MovtechProject.DataAcess.Repositories
             using (SqlConnection connection = _database.GetConnection())
             {
                 await connection.OpenAsync();
-                SqlCommand command = new SqlCommand("SELECT * FROM respostas WHERE idUsuario = @idUsuario", connection);
-                command.Parameters.AddWithValue("@idUsuario", idUser);
+                SqlCommand command = new SqlCommand($"SELECT * FROM respostas WHERE idUsuario = {idUser}", connection);
 
                 using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {

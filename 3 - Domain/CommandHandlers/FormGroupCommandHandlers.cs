@@ -85,7 +85,7 @@ namespace MovtechProject._3___Domain.CommandHandlers
                 foreach (Question question in form.Questions)
                 {
                     question.IdForms = form.Id;
-                    await _questionsRepository.CreateQuestionsAsync(question);  
+                    await _questionsRepository.CreateQuestionsAsync(question);
                 }
             }
 
@@ -129,19 +129,21 @@ namespace MovtechProject._3___Domain.CommandHandlers
                 throw new KeyNotFoundException($"Id {id} não encontrado!");
             }
 
-            List<Form> forms = await _formsRepository.GetFormsByGroupId(id);
+            List<int> formsIds = await _formsRepository.GetFormsIdsByGroupId(id);
 
-            foreach (Form form in forms)
+            if (formsIds.Any())
             {
-                List<Question> questions = await _questionsRepository.GetQuestionByFormsId(form.Id);
+                List<int> questionsIds = await _questionsRepository.GetQuestionIdsByFormsIds(formsIds);
 
-                foreach (Question question in questions)
+                if (questionsIds.Any())
                 {
-                    await _answerRepository.DeleteAnswerByQuestionId(question.Id);
-                    await _questionsRepository.DeleteQuestionsAsync(question.Id);
+                    await _answerRepository.DeleteAnswersByQuestionIds(questionsIds);
+
+                    await _questionsRepository.DeleteQuestionsIdsAsync(questionsIds);
+
                 }
 
-                await _formsRepository.DeleteFormsAsync(form.Id);
+                await _formsRepository.DeleteFormsAsync(formsIds);
             }
 
             return await _formsGroupRepository.DeleteFormsGroupAsync(id);

@@ -122,15 +122,15 @@ namespace MovtechProject._3___Domain.CommandHandlers
                 throw new KeyNotFoundException($"Id {id} não encontrado!");
             }
 
-            List<Question> questions = await _questionRepository.GetQuestionByFormsId(id);
+            List<int> questionsIds = await _questionRepository.GetQuestionIdsByFormsId(id);
 
-            foreach (Question question in questions)
+            if (questionsIds.Any())
             {
-                await _answerRepository.DeleteAnswerByQuestionId(question.Id);
-                await _questionRepository.DeleteQuestionsAsync(question.Id);
+                await _answerRepository.DeleteAnswersByQuestionIds(questionsIds);
+                await _questionRepository.DeleteQuestionsIdsAsync(questionsIds);
             }
 
-            return await _formsRepository.DeleteFormsAsync(id);
+            return await _formsRepository.DeleteFormAsync(id);
         }
     }
 }
