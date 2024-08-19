@@ -19,9 +19,9 @@ public class UserService
         return await _userCommandHandlers.CreateUsersAsync(users);
     }
 
-    public async Task<(string, string)> UserLogin(User loginUser)
+    public async Task<(string, string)> UserLogin(User loginUser, HttpContext httpContext)
     {
-        return await _userCommandHandlers.UserLogin(loginUser);
+        return await _userCommandHandlers.UserLogin(loginUser, httpContext);
     }
 
     public void Logout(HttpContext httpContext)

@@ -2708,11 +2708,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Estagiario3\\Desktop\\MovtechProject\\MovtechProject\\MovtechProject.csproj",
+      "projectUniqueName": "C:\\Users\\Estagiario3\\Desktop\\ProjectMovtech\\MovtechProject\\MovtechProject.csproj",
       "projectName": "MovtechProject",
-      "projectPath": "C:\\Users\\Estagiario3\\Desktop\\MovtechProject\\MovtechProject\\MovtechProject.csproj",
+      "projectPath": "C:\\Users\\Estagiario3\\Desktop\\ProjectMovtech\\MovtechProject\\MovtechProject.csproj",
       "packagesPath": "C:\\Users\\Estagiario3\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Estagiario3\\Desktop\\MovtechProject\\MovtechProject\\obj\\",
+      "outputPath": "C:\\Users\\Estagiario3\\Desktop\\ProjectMovtech\\MovtechProject\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Estagiario3\\AppData\\Roaming\\NuGet\\NuGet.Config",

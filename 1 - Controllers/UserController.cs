@@ -31,7 +31,7 @@ public class UserController : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult<(string, string)>> Login(User loginUser)
     {
-        var (token, refreshToken) = await _userService.UserLogin(loginUser);
+        var (token, refreshToken) = await _userService.UserLogin(loginUser, HttpContext);
         return Ok(new { token, refreshToken });
     }
 

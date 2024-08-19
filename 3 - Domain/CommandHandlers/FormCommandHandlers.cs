@@ -132,5 +132,11 @@ namespace MovtechProject._3___Domain.CommandHandlers
 
             return await _formsRepository.DeleteFormAsync(id);
         }
+
+
+        public async Task<List<Form>> GetFormsByGroupId(int idGroup)
+        {
+            return await _formsRepository.GetFormsByGroupId(idGroup);
+        }
     }
 }

@@ -54,5 +54,13 @@ namespace MovtechProject.Controllers
             bool deleted = await _questionsService.DeleteQuestionsAsync(id);
             return Ok(deleted);
         }
+
+        [HttpGet("Form/{idForms}")]
+        [Authorize]
+        public async Task<ActionResult<List<Question>>> GetQuestionByFormsId(int idForms)
+        {
+            List<Question> getByForm = await _questionsService.GetQuestionByFormsId(idForms);
+            return Ok(getByForm);
+        }
     }
 }

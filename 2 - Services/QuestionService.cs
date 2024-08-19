@@ -36,5 +36,10 @@ namespace MovtechProject.Services
         {
             return await _questionCommandHandlers.DeleteQuestionsAsync(id);
         }
+
+        public async Task<List<Question>> GetQuestionByFormsId(int idForms)
+        {
+            return await _questionCommandHandlers.GetQuestionByFormsId(idForms);
+        }
     }
 }

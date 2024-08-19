@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MovtechProject._3___Domain.CommandHandlers;
 using MovtechProject.Domain.Models;
 using MovtechProject.Services;
 
@@ -54,6 +55,14 @@ namespace MovtechProject.Controllers
         {
             bool deleted = await _formsService.DeleteFormsAsync(id);
             return Ok(deleted);
+        }
+
+        [HttpGet("Group/{idGroup}")]
+        [Authorize]
+        public async Task<ActionResult<List<Form>>> GetFormsByGroupId(int idGroup)
+        {
+            List<Form> getId = await _formsService.GetFormsByGroupId(idGroup);
+            return Ok(getId);
         }
     }
 }

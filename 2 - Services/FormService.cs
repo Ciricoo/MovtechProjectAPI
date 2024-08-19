@@ -1,4 +1,5 @@
 ﻿using MovtechProject._3___Domain.CommandHandlers;
+using MovtechProject.DataAcess.Repositories;
 using MovtechProject.Domain.Models;
 
 namespace MovtechProject.Services
@@ -34,6 +35,11 @@ namespace MovtechProject.Services
         public async Task<bool> DeleteFormsAsync(int id)
         {
             return await _formCommandHandlers.DeleteFormsAsync(id);
+        }
+
+        public async Task<List<Form>> GetFormsByGroupId(int idGroup)
+        {
+            return await _formCommandHandlers.GetFormsByGroupId(idGroup);
         }
     }
 }

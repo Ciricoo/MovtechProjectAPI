@@ -1,4 +1,5 @@
-﻿using MovtechProject.DataAcess.Repositories;
+﻿using Microsoft.AspNetCore.Http;
+using MovtechProject.DataAcess.Repositories;
 using MovtechProject.Domain.Models;
 using MovtechProject.Domain.Models.Enums;
 
@@ -51,22 +52,23 @@ public class UserCommandHandlers
         return await _userRepository.CreateUsersAsync(users);
     }
 
-    public async Task<(string token, string refreshToken)> UserLogin(User loginUser)
+    public async Task<(string token, string refreshToken)> UserLogin(User loginUser, HttpContext httpContext)
     {
         List<User> users = await _userRepository.GetUserByNameAsync(loginUser.Name);
         User? user = users.FirstOrDefault(u => u.Password == loginUser.Password);
-
-        if (user == null)
-        {
-            throw new InvalidOperationException("Credenciais inválidas");
-        }
 
         if (_tokenCommandHandlers.IsUserLoggedIn())
         {
             throw new InvalidOperationException("O usuário já está logado.");
         }
+        if (user == null)
+        {
+            throw new InvalidOperationException("Credenciais inválidas");
+        }
+
 
         string token = _tokenCommandHandlers.GenerateToken(user, out string refreshToken);
+        httpContext.Response.Headers.Add("Authorization", $"Bearer {token}");
         return (token, refreshToken);
     }
 

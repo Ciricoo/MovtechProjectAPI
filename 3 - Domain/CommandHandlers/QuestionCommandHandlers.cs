@@ -109,5 +109,10 @@ namespace MovtechProject._3___Domain.CommandHandlers
             return await _questionsRepository.DeleteQuestionsAsync(id);
         }
 
+        public async Task<List<Question>> GetQuestionByFormsId(int idForms)
+        {
+            return await _questionsRepository.GetQuestionByFormsId(idForms);
+        }
+
     }
 }

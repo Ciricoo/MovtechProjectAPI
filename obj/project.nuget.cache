@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "fzzDuHQXKLqjxwMNaaredxWeTGYZtRPy0iCLGsuvLUzBiz1DlyGiUokDkjbjf9p5hEZOWi6TJqXSIWFpf/fA2w==",
+  "dgSpecHash": "TAKjiH6AjW8frmCHQAySQWAylDu6uwp1+708ZvXt8RF1q+40yXIHRLULX0+VZN4IxrKiztTw+lcUqtsekI2tAg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Estagiario3\\Desktop\\MovtechProject\\MovtechProject\\MovtechProject.csproj",
+  "projectFilePath": "C:\\Users\\Estagiario3\\Desktop\\ProjectMovtech\\MovtechProject\\MovtechProject.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Estagiario3\\.nuget\\packages\\microsoft.aspnetcore.authentication\\2.2.0\\microsoft.aspnetcore.authentication.2.2.0.nupkg.sha512",
     "C:\\Users\\Estagiario3\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.2.0\\microsoft.aspnetcore.authentication.abstractions.2.2.0.nupkg.sha512",
