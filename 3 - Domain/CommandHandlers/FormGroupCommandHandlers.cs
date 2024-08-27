@@ -85,8 +85,9 @@ namespace MovtechProject._3___Domain.CommandHandlers
                 foreach (Question question in form.Questions)
                 {
                     question.IdForms = form.Id;
-                    await _questionsRepository.CreateQuestionsAsync(question);
                 }
+
+                await _questionsRepository.CreateQuestionsAsync(form.Questions.ToList());
             }
 
             return createdGroup;

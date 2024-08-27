@@ -31,5 +31,10 @@ namespace MovtechProject.Services
         {
             return await _answerCommandHandlers.GetAnswerByUserIdAsync(idUser);
         }
+
+        public async Task<List<Answer>> GetAnswersByQuestionId(int idQuestion)
+        {
+            return await _answerCommandHandlers.GetAnswersByQuestionId(idQuestion);
+        }
     }
 }

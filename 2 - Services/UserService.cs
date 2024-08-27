@@ -33,4 +33,9 @@ public class UserService
     {
         return _userCommandHandlers.ValidateRefreshToken(refreshToken, out newJwtToken, out newRefreshToken);
     }
+
+    public async Task<List<User>> GetUserAsync()
+    {
+        return await _userCommandHandlers.GetUserAsync();
+    }
 }

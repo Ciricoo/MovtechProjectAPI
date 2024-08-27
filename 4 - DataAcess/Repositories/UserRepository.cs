@@ -42,6 +42,33 @@ namespace MovtechProject.DataAcess.Repositories
             return Users;
         }
 
+        public async Task<List<User>> GetUserAsync()
+        {
+            List<User> Users = new List<User>();
+
+            using (SqlConnection connection = _database.GetConnection())
+            {
+                await connection.OpenAsync();
+                SqlCommand command = new SqlCommand($"SELECT * FROM usuarios", connection);
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        Users.Add(new User
+                        {
+                            Id = (int)reader["id"],
+                            Name = reader.GetString("nome"),
+                            Password = reader.GetString("senha"),
+                            Type = Enum.Parse<UserEnumType>(reader.GetString("tipo"))
+                        });
+                    }
+                }
+            }
+
+            return Users;
+        }
+
         public async Task<User?> GetUserByIdAsync(int id)
         {
             User? Users = null;

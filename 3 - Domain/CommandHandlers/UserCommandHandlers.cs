@@ -88,4 +88,9 @@ public class UserCommandHandlers
 
         return validateRefresh;
     }
+
+    public async Task<List<User>> GetUserAsync()
+    {
+        return await _userRepository.GetUserAsync();
+    }
 }

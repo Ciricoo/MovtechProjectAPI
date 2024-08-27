@@ -67,15 +67,29 @@ namespace MovtechProject.DataAcess.Repositories
             return Questions;
         }
 
-        public async Task<Question> CreateQuestionsAsync(Question questions)
+        public async Task<List<Question>> CreateQuestionsAsync(List<Question> questions)
         {
             using (SqlConnection connection = _database.GetConnection())
             {
                 await connection.OpenAsync();
-                SqlCommand command = new SqlCommand($"INSERT INTO perguntas (texto, idFormulario) VALUES ('{questions.Text}', {questions.IdForms}); SELECT SCOPE_IDENTITY();", connection);
 
-                var insertedId = await command.ExecuteScalarAsync();
-                questions.Id = Convert.ToInt32(insertedId);
+                DataTable dt = new DataTable();
+                dt.Columns.Add("texto", typeof(string));
+                dt.Columns.Add("idFormulario", typeof(int));
+
+                foreach (Question question in questions)
+                {
+                    dt.Rows.Add(question.Text, question.IdForms);
+                }
+
+                using(SqlBulkCopy bulkCopy = new SqlBulkCopy(connection))
+                {
+                    bulkCopy.DestinationTableName = "perguntas";
+                    bulkCopy.ColumnMappings.Add("texto", "texto");
+                    bulkCopy.ColumnMappings.Add("idFormulario", "idFormulario");
+
+                    await bulkCopy.WriteToServerAsync(dt);
+                }
 
                 return questions;
             }

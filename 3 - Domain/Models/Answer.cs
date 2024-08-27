@@ -1,4 +1,4 @@
-﻿namespace MovtechProject.Domain.Models
+﻿    namespace MovtechProject.Domain.Models
 {
     public class Answer
     {

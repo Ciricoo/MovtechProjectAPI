@@ -35,6 +35,7 @@ public class UserController : ControllerBase
         return Ok(new { token, refreshToken });
     }
 
+    [Authorize]
     [HttpPost("logout")]
     public ActionResult Logout()
     {
@@ -42,10 +43,19 @@ public class UserController : ControllerBase
         return Ok("Logout concluido");
     }
 
+    [Authorize]
     [HttpPost("refresh")]
     public ActionResult RefreshToken([FromBody] string refreshToken)
     {
         _userService.ValidateRefreshToken(refreshToken, out string newJwtToken, out string newRefreshToken);
         return Ok(new { token = newJwtToken, refreshToken = newRefreshToken });
+    }
+
+    [Authorize(Roles = "Administrador")]
+    [HttpGet]
+    public async Task<ActionResult<List<User>>> GetUserAsync()
+    {
+        List<User> get = await _userService.GetUserAsync();
+        return Ok(get);
     }
 }

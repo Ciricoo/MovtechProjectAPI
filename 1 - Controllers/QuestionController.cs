@@ -33,9 +33,9 @@ namespace MovtechProject.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Administrador")]
-        public async Task<ActionResult<Question>> CreateQuestions(Question questions)
+        public async Task<ActionResult<List<Question>>> CreateQuestions(List<Question> questions)
         {
-            Question created = await _questionsService.CreateQuestionsAsync(questions);
+            List<Question> created = await _questionsService.CreateQuestionsAsync(questions);
             return Ok(created);
         }
 

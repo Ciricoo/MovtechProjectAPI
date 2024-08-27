@@ -44,18 +44,22 @@ namespace MovtechProject._3___Domain.CommandHandlers
             return questions;
         }
 
-        public async Task<Question> CreateQuestionsAsync(Question questions)
+        public async Task<List<Question>> CreateQuestionsAsync(List<Question> questions)
         {
-            if (string.IsNullOrWhiteSpace(questions.Text))
+            foreach (Question question in questions)
             {
-                throw new ArgumentException("O texto da pergunta não pode ser vazio!", questions.Text);
-            }
+                if (string.IsNullOrWhiteSpace(question.Text))
+                {
+                    throw new ArgumentException("O texto da pergunta não pode ser vazio!", question.Text);
+                }
 
-            Form? FkForm = await _formRepository.GetFormsByIdAsync(questions.IdForms);
+                Form? FkForm = await _formRepository.GetFormsByIdAsync(question.IdForms);
 
-            if(FkForm == null)
-            {
-                throw new KeyNotFoundException($"FK do formulário {questions.IdForms} inválida!");
+                if (FkForm == null)
+                {
+                    throw new KeyNotFoundException($"FK do formulário {question.IdForms} inválida!");
+                }
+
             }
 
             return await _questionsRepository.CreateQuestionsAsync(questions);
