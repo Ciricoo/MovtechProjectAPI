@@ -7,13 +7,24 @@ public class UserCommandHandlers
 {
     private readonly UserRepository _userRepository;
     private readonly TokenCommandHandlers _tokenCommandHandlers;
+    private readonly AnswerRepository _answerRepository;
 
-    public UserCommandHandlers(UserRepository userRepository, TokenCommandHandlers tokenCommandHandlers)
+    public UserCommandHandlers(UserRepository userRepository, TokenCommandHandlers tokenCommandHandlers, AnswerRepository answerRepository)
     {
         _userRepository = userRepository;
         _tokenCommandHandlers = tokenCommandHandlers;
+        _answerRepository = answerRepository;
     }
 
+    public async Task<List<User>> GetUserAsync()
+    {
+        List<User> users =  await _userRepository.GetUserAsync();
+        if (users == null)
+        {
+            throw new ArgumentNullException("Não existem usuários!");
+        }
+        return users;
+    }
     public async Task<User> GetUserByIdAsync(int id)
     {
         if (id <= 0)
@@ -89,8 +100,10 @@ public class UserCommandHandlers
         return validateRefresh;
     }
 
-    public async Task<List<User>> GetUserAsync()
+    public async Task<int> GetAnswersAccordingNpsGrade(int min, int max)
     {
-        return await _userRepository.GetUserAsync();
+        List<Answer> answers = await _answerRepository.GetAnswersAsync();
+        return answers.Where(x => x.Grade >= min && x.Grade <= max).Count();
     }
+
 }

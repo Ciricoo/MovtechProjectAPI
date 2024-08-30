@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using MovtechProject._2___Services;
 using MovtechProject._3___Domain.CommandHandlers;
 using MovtechProject._3___Domain.Middleware;
 using MovtechProject.DataAcess.Data;
@@ -25,12 +26,14 @@ builder.Services.AddScoped<FormService>();
 builder.Services.AddScoped<QuestionService>();
 builder.Services.AddScoped<AnswerService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<NpsService>();
 
 builder.Services.AddScoped<FormGroupCommandHandlers>();
 builder.Services.AddScoped<FormCommandHandlers>();
 builder.Services.AddScoped<QuestionCommandHandlers>();
 builder.Services.AddScoped<AnswerCommandHandlers>();
 builder.Services.AddScoped<UserCommandHandlers>();
+builder.Services.AddScoped<NpsCommandHandlers>();
 
 builder.Services.AddScoped<FormGroupRepository>();
 builder.Services.AddScoped<FormRepository>();

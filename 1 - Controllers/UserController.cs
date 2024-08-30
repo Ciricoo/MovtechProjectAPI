@@ -58,4 +58,33 @@ public class UserController : ControllerBase
         List<User> get = await _userService.GetUserAsync();
         return Ok(get);
     }
+
+    [Authorize(Roles = "Administrador")]
+    [HttpGet("promoters")]
+    public async Task<ActionResult<int>> GetPromoters()
+    {
+        int get = await _userService.GetPromoters();
+        return Ok(get);
+    }
+
+    [Authorize(Roles = "Administrador")]
+    [HttpGet("passives")]
+    public async Task<ActionResult<int>> GetPassives()
+    {
+        int get = await _userService.GetPassives();
+        return Ok(get);
+    }
+
+    [Authorize(Roles = "Administrador")]
+    [HttpGet("detractors")]
+    public async Task<ActionResult<int>> GetDetractors()
+    {
+        int get = await _userService.GetDetractors();
+        return Ok(get);
+    }
+
+
+
+
+
 }
