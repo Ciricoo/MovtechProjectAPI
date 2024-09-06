@@ -79,12 +79,21 @@ public class UserCommandHandlers
 
 
         string token = _tokenCommandHandlers.GenerateToken(user, out string refreshToken);
+
         httpContext.Response.Headers.Add("Authorization", $"Bearer {token}");
+        httpContext.Response.Cookies.Append("Refresh-Token", refreshToken, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true, // Necessário para HTTPS
+            SameSite = SameSiteMode.None, // Permite que o cookie seja enviado em requisições cross-site
+        });
+
         return (token, refreshToken);
     }
 
     public void Logout(HttpContext httpContext)
     {
+        httpContext.Response.Cookies.Delete("Refresh-Token");
         _tokenCommandHandlers.RevokeToken(httpContext);
     }
 
@@ -100,10 +109,14 @@ public class UserCommandHandlers
         return validateRefresh;
     }
 
-    public async Task<int> GetAnswersAccordingNpsGrade(int min, int max)
+    public async Task<List<int>> GetAnswersAccordingNpsGrade()
     {
         List<Answer> answers = await _answerRepository.GetAnswersAsync();
-        return answers.Where(x => x.Grade >= min && x.Grade <= max).Count();
+        int promoters = answers.Where(x => x.Grade >= 9 && x.Grade <= 10).Count();
+        int passives = answers.Where(x => x.Grade >= 7 && x.Grade <= 8).Count();
+        int detractors = answers.Where(x => x.Grade >= 0 && x.Grade <= 6).Count();
+        List<int> list = new List<int> { promoters, passives, detractors };
+        return list;
     }
 
 }

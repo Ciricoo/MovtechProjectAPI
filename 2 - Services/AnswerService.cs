@@ -1,4 +1,5 @@
 ﻿using MovtechProject._3___Domain.CommandHandlers;
+using MovtechProject.DataAcess.Repositories;
 using MovtechProject.Domain.Models;
 
 namespace MovtechProject.Services
@@ -35,6 +36,11 @@ namespace MovtechProject.Services
         public async Task<List<Answer>> GetAnswersByQuestionId(int idQuestion)
         {
             return await _answerCommandHandlers.GetAnswersByQuestionId(idQuestion);
+        }
+
+        public async Task<List<Answer>> GetAnswersWithDetailsAsync(int? questionId = null, int? userId = null)
+        {
+            return await _answerCommandHandlers.GetAnswersWithDetailsAsync(questionId, userId);
         }
     }
 }

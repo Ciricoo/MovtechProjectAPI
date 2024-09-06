@@ -60,29 +60,13 @@ public class UserController : ControllerBase
     }
 
     [Authorize(Roles = "Administrador")]
-    [HttpGet("promoters")]
-    public async Task<ActionResult<int>> GetPromoters()
-    {
-        int get = await _userService.GetPromoters();
-        return Ok(get);
-    }
+    [HttpGet("Npslist")]
 
-    [Authorize(Roles = "Administrador")]
-    [HttpGet("passives")]
-    public async Task<ActionResult<int>> GetPassives()
+    public async Task<ActionResult<List<int>>> GetAnswersAccordingNpsGrade()
     {
-        int get = await _userService.GetPassives();
-        return Ok(get);
+        List<int> npsList = await _userService.GetAnswersAccordingNpsGrade();
+        return Ok(npsList);
     }
-
-    [Authorize(Roles = "Administrador")]
-    [HttpGet("detractors")]
-    public async Task<ActionResult<int>> GetDetractors()
-    {
-        int get = await _userService.GetDetractors();
-        return Ok(get);
-    }
-
 
 
 

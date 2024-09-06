@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.Extensions.Primitives;
+
 namespace MovtechProject._3___Domain.Middleware
 {
     public class TokenMiddleware
@@ -9,7 +11,7 @@ namespace MovtechProject._3___Domain.Middleware
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext httpContext, TokenCommandHandlers RevokeToken)
+        public async Task InvokeAsync(HttpContext httpContext, TokenCommandHandlers tokenHandlers)
         {
             string path = httpContext.Request.Path.Value!.ToLower();
 
@@ -17,13 +19,32 @@ namespace MovtechProject._3___Domain.Middleware
             {
                 await _next(httpContext);
                 return;
-            } 
+            }
 
-            string token = httpContext.Request.Headers["Authorization"].FirstOrDefault()!.Split(" ").Last();
+            string token = httpContext.Request.Headers.Authorization.FirstOrDefault()!.Split(" ").Last();
+             string refreshToken = httpContext.Request.Cookies["Refresh-Token"]!;
 
-            if(token == null || RevokeToken.IsTokenRevoked(token))
+            if (string.IsNullOrEmpty(token) || tokenHandlers.IsTokenRevoked(token) || tokenHandlers.IsTokenExpires(token))
             {
                 httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized; return;
+            }
+
+            if (!string.IsNullOrEmpty(refreshToken) && tokenHandlers.ValidateRefreshToken(refreshToken, out string newJwtToken, out string newRefreshToken))
+            {
+                httpContext.Response.OnStarting(() =>
+                {
+                    Console.WriteLine(httpContext.Request.Headers.Authorization.FirstOrDefault()!.Split(" ").Last());
+                    httpContext.Response.Headers.Add("Authorization", $"Bearer {newJwtToken}");
+                    Console.WriteLine(httpContext.Response.Headers.Authorization.FirstOrDefault()!.Split(" ").Last());
+                    httpContext.Response.Cookies.Append("Refresh-Token", newRefreshToken, new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.None, // Permite que o cookie seja enviado em requisições cross-site
+                    });
+
+                    return Task.CompletedTask;
+                });
             }
 
             await _next(httpContext);

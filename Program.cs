@@ -52,7 +52,7 @@ builder.Services.AddAuthentication(options => // Configuração de autentificação,
 }).AddJwtBearer(options => // 
 {
     options.RequireHttpsMetadata = false; // aceita tokens em requisições HTTP, além de HTTPS
-    options.SaveToken = true;                                                                                                                                                                                                                                                                                                            
+    options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters // parametros para efetuar a validação do token
     {
         ValidateIssuerSigningKey = true, // validar a chave
@@ -67,7 +67,19 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigin",
         builder => builder.WithOrigins("http://localhost:4200")
                           .AllowAnyMethod()
-                          .AllowAnyHeader());
+                          .AllowAnyHeader()
+                          .AllowCredentials()
+                          .WithExposedHeaders(new[]{"Authorization"}));
+});
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.Name = "NpsProject.AuthCookie";
+    options.ExpireTimeSpan = TimeSpan.FromHours(2);
+    options.SlidingExpiration = true;
+    options.Cookie.HttpOnly = false;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+    options.Cookie.SameSite = SameSiteMode.None;
 });
 
 

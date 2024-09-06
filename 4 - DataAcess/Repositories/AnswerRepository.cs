@@ -180,6 +180,46 @@ namespace MovtechProject.DataAcess.Repositories
             }
             return answers;
         }
+
+        public async Task<List<Answer>> GetAnswersWithDetailsAsync(int? questionId = null, int? userId = null)
+        {
+            List<Answer> answers = new List<Answer>();
+
+            using (SqlConnection connection = _database.GetConnection())
+            {
+                await connection.OpenAsync();
+                string query = @"
+                    SELECT a.*, q.texto AS QuestionText, u.nome AS Username
+                    FROM respostas a
+                    JOIN perguntas q ON a.idPerguntas = q.id
+                    JOIN usuarios u ON a.idUsuario = u.id
+                    WHERE (@questionId IS NULL OR a.idPerguntas = @questionId)
+                      AND (@userId IS NULL OR a.idUsuario = @userId)";
+
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@questionId", (object)questionId ?? DBNull.Value);
+                command.Parameters.AddWithValue("@userId", (object)userId ?? DBNull.Value);
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        answers.Add(new Answer
+                        {
+                            Id = (int)reader["id"],
+                            IdQuestion = (int)reader["idPerguntas"],
+                            IdUser = (int)reader["idUsuario"],
+                            Grade = (int)reader["nota"],
+                            Description = reader.GetString("descricao"),
+                            QuestionText = reader.GetString("QuestionText"),
+                            Username = reader.GetString("Username")
+                        });
+                    }
+                }
+            }
+
+            return answers;
+        }
     }
 }
 

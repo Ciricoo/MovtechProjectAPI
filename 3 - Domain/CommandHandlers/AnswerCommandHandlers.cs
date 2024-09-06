@@ -103,5 +103,10 @@ namespace MovtechProject._3___Domain.CommandHandlers
         {
             return await _answerRepository.GetAnswersByQuestionId(idQuestion);
         }
+
+        public async Task<List<Answer>> GetAnswersWithDetailsAsync(int? questionId = null, int? userId = null)
+        {
+            return await _answerRepository.GetAnswersWithDetailsAsync(questionId, userId);
+        }
     }
 }

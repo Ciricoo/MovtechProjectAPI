@@ -7,6 +7,7 @@
         public string Description { get; set; } = string.Empty;
         public int IdQuestion { get; set; }
         public int IdUser { get; set; }
-
+        public string? QuestionText{ get; set; }
+        public string? Username { get; set; }
     }
 }

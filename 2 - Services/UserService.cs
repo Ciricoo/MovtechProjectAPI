@@ -39,19 +39,9 @@ public class UserService
         return await _userCommandHandlers.GetUserAsync();
     }
 
-    public async Task<int> GetPromoters()
+    public async Task<List<int>> GetAnswersAccordingNpsGrade()
     {
-        return await _userCommandHandlers.GetAnswersAccordingNpsGrade(9, 10);
-    }
-
-    public async Task<int> GetPassives()
-    {
-        return await _userCommandHandlers.GetAnswersAccordingNpsGrade(7, 8);
-    }
-
-    public async Task<int> GetDetractors()
-    {
-        return await _userCommandHandlers.GetAnswersAccordingNpsGrade(0, 6);
+        return await _userCommandHandlers.GetAnswersAccordingNpsGrade();
     }
 
 

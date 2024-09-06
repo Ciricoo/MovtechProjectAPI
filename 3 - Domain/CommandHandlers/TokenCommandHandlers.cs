@@ -16,16 +16,16 @@ public class TokenCommandHandlers
     {
         JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
         byte[] key = Encoding.ASCII.GetBytes("43e4dbf0-52ed-4203-895d-42b586496bd4");
-
         SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.Name, loginUser.Name),
                 new Claim(ClaimTypes.Role, loginUser.Type.ToString()),
-                new Claim(ClaimTypes.NameIdentifier, loginUser.Id.ToString())
+                new Claim(ClaimTypes.NameIdentifier, loginUser.Id.ToString()),
+                new Claim(ClaimTypes.Hash, Guid.NewGuid().ToString())
             }),
-            Expires = DateTime.UtcNow.AddHours(8),
+            Expires = DateTime.UtcNow.AddMinutes(1),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)// HmacSha256Signature valida a autenticidade do token
             // SymmetricSecurityKey(key) cria uma nova chave de segurança simétrica usando o valor de key.
         };
@@ -37,15 +37,34 @@ public class TokenCommandHandlers
 
         refreshToken = Guid.NewGuid().ToString();
 
+        Console.WriteLine($"Adicionando refreshToken: {refreshToken} para token: {tokenString}");
+
         _refreshTokens[refreshToken] = tokenString;
 
         return tokenString;
+    }
+
+    public bool AddRefreshTokenInList(string refreshToken, string token)
+    {
+        _refreshTokens[refreshToken] = token;
+        return true;
     }
 
     public bool ValidateRefreshToken(string refreshToken, out string newJwtToken, out string newRefreshToken)
     {
         newJwtToken = null!;
         newRefreshToken = null!;
+
+        Console.WriteLine($"Validando refreshToken: {refreshToken}");
+
+        if (_refreshTokens.ContainsKey(refreshToken))
+        {
+            Console.WriteLine("Refresh token encontrado.");
+        }
+        else
+        {
+            Console.WriteLine("Refresh token NÃO encontrado.");
+        }
 
         if (_refreshTokens.TryGetValue(refreshToken, out string oldJwtToken))
         {
@@ -69,12 +88,40 @@ public class TokenCommandHandlers
                 {
                     User user = new User { Id = nameId, Name = nameClaim!, Type = Enum.Parse<UserEnumType>(roleClaim!) };
                     newJwtToken = GenerateToken(user, out newRefreshToken);
+
                     _refreshTokens.Remove(refreshToken, out _);
+
+                    Console.WriteLine($"Removendo refreshToken antigo: {refreshToken} e adicionando novo token: {newJwtToken}");
+
+                    _refreshTokens[newRefreshToken] = newJwtToken;
+
                     return true;
                 }
             }
         }
 
+        return false;
+    }
+
+    public bool IsTokenExpires(string token)
+    {
+        JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+
+        if (handler.CanReadToken(token))
+        {
+            JwtSecurityToken jwtToken = handler.ReadJwtToken(token);
+
+            DateTime expiration = jwtToken.ValidTo;
+      
+            if (expiration < DateTime.UtcNow)
+            {
+                RevokedTokens.Add(token);
+
+                activeToken = null;
+
+                return true;
+            }
+        }
         return false;
     }
 
