@@ -188,13 +188,14 @@ namespace MovtechProject.DataAcess.Repositories
             using (SqlConnection connection = _database.GetConnection())
             {
                 await connection.OpenAsync();
+
                 string query = @"
-                    SELECT a.*, q.texto AS QuestionText, u.nome AS Username
-                    FROM respostas a
-                    JOIN perguntas q ON a.idPerguntas = q.id
-                    JOIN usuarios u ON a.idUsuario = u.id
-                    WHERE (@questionId IS NULL OR a.idPerguntas = @questionId)
-                      AND (@userId IS NULL OR a.idUsuario = @userId)";
+                SELECT a.*, q.texto AS QuestionText, u.nome AS Username
+                FROM respostas a
+                JOIN perguntas q ON a.idPerguntas = q.id
+                JOIN usuarios u ON a.idUsuario = u.id
+                WHERE (@questionId IS NULL OR a.idPerguntas = @questionId)
+                    AND (@userId IS NULL OR a.idUsuario = @userId)";
 
                 SqlCommand command = new SqlCommand(query, connection);
                 command.Parameters.AddWithValue("@questionId", (object)questionId ?? DBNull.Value);
@@ -220,6 +221,7 @@ namespace MovtechProject.DataAcess.Repositories
 
             return answers;
         }
+
     }
 }
 

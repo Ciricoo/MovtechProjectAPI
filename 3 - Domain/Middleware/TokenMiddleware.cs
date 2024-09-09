@@ -15,7 +15,7 @@ namespace MovtechProject._3___Domain.Middleware
         {
             string path = httpContext.Request.Path.Value!.ToLower();
 
-            if (path == "/api/user/login" || path == "/api/user/")
+            if (path == "/api/user/login" || path == "/api/user/logout" || path == "/api/user/")
             {
                 await _next(httpContext);
                 return;
@@ -33,9 +33,7 @@ namespace MovtechProject._3___Domain.Middleware
             {
                 httpContext.Response.OnStarting(() =>
                 {
-                    Console.WriteLine(httpContext.Request.Headers.Authorization.FirstOrDefault()!.Split(" ").Last());
                     httpContext.Response.Headers.Add("Authorization", $"Bearer {newJwtToken}");
-                    Console.WriteLine(httpContext.Response.Headers.Authorization.FirstOrDefault()!.Split(" ").Last());
                     httpContext.Response.Cookies.Append("Refresh-Token", newRefreshToken, new CookieOptions
                     {
                         HttpOnly = true,

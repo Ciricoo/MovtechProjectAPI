@@ -35,7 +35,6 @@ public class UserController : ControllerBase
         return Ok(new { token, refreshToken });
     }
 
-    [Authorize]
     [HttpPost("logout")]
     public ActionResult Logout()
     {
@@ -67,8 +66,13 @@ public class UserController : ControllerBase
         List<int> npsList = await _userService.GetAnswersAccordingNpsGrade();
         return Ok(npsList);
     }
-
-
+    [Authorize]
+    [HttpGet("Expires")]
+    public ActionResult RevokeToken()
+    {
+        _userService.RevokeToken(HttpContext);
+        return Ok("Token revogado");
+    }
 
 
 }

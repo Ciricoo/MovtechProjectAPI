@@ -3,10 +3,12 @@
 public class UserService
 {
     private readonly UserCommandHandlers _userCommandHandlers;
+    private readonly TokenCommandHandlers _tokenCommandHandlers;
 
-    public UserService(UserCommandHandlers userCommandHandlers)
+    public UserService(UserCommandHandlers userCommandHandlers, TokenCommandHandlers tokenCommandHandlers)
     {
         _userCommandHandlers = userCommandHandlers;
+        _tokenCommandHandlers = tokenCommandHandlers;
     }
 
     public async Task<User> GetUserByIdAsync(int id)
@@ -44,5 +46,9 @@ public class UserService
         return await _userCommandHandlers.GetAnswersAccordingNpsGrade();
     }
 
+    public void RevokeToken(HttpContext httpContext)
+    {
+        _tokenCommandHandlers.RevokeToken(httpContext);
+    }
 
 }
