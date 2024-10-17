@@ -72,6 +72,7 @@ public class UserCommandHandlers
         {
             throw new InvalidOperationException("O usuário já está logado.");
         }
+
         if (user == null)
         {
             throw new InvalidOperationException("Credenciais inválidas");
@@ -109,14 +110,6 @@ public class UserCommandHandlers
         return validateRefresh;
     }
 
-    public async Task<List<int>> GetAnswersAccordingNpsGrade()
-    {
-        List<Answer> answers = await _answerRepository.GetAnswersAsync();
-        int promoters = answers.Where(x => x.Grade >= 9 && x.Grade <= 10).Count();
-        int passives = answers.Where(x => x.Grade >= 7 && x.Grade <= 8).Count();
-        int detractors = answers.Where(x => x.Grade >= 0 && x.Grade <= 6).Count();
-        List<int> list = new List<int> { promoters, passives, detractors };
-        return list;
-    }
+    
 
 }

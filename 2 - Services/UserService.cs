@@ -41,14 +41,6 @@ public class UserService
         return await _userCommandHandlers.GetUserAsync();
     }
 
-    public async Task<List<int>> GetAnswersAccordingNpsGrade()
-    {
-        return await _userCommandHandlers.GetAnswersAccordingNpsGrade();
-    }
-
-    public void RevokeToken(HttpContext httpContext)
-    {
-        _tokenCommandHandlers.RevokeToken(httpContext);
-    }
+   
 
 }

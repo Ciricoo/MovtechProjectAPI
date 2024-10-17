@@ -21,10 +21,10 @@ namespace MovtechProject._3___Domain.Middleware
                 return;
             }
 
-            string token = httpContext.Request.Headers.Authorization.FirstOrDefault()!.Split(" ").Last();
-             string refreshToken = httpContext.Request.Cookies["Refresh-Token"]!;
+            string? token = httpContext.Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last();
+            string refreshToken = httpContext.Request.Cookies["Refresh-Token"]!;
 
-            if (string.IsNullOrEmpty(token) || tokenHandlers.IsTokenRevoked(token) || tokenHandlers.IsTokenExpires(token))
+            if (string.IsNullOrEmpty(token) || tokenHandlers.IsTokenExpires(token))
             {
                 httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized; return;
             }

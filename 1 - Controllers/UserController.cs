@@ -39,7 +39,7 @@ public class UserController : ControllerBase
     public ActionResult Logout()
     {
         _userService.Logout(HttpContext);
-        return Ok("Logout concluido");
+        return Ok("Logout concluido' ");
     }
 
     [Authorize]
@@ -57,22 +57,5 @@ public class UserController : ControllerBase
         List<User> get = await _userService.GetUserAsync();
         return Ok(get);
     }
-
-    [Authorize(Roles = "Administrador")]
-    [HttpGet("Npslist")]
-
-    public async Task<ActionResult<List<int>>> GetAnswersAccordingNpsGrade()
-    {
-        List<int> npsList = await _userService.GetAnswersAccordingNpsGrade();
-        return Ok(npsList);
-    }
-    [Authorize]
-    [HttpGet("Expires")]
-    public ActionResult RevokeToken()
-    {
-        _userService.RevokeToken(HttpContext);
-        return Ok("Token revogado");
-    }
-
 
 }

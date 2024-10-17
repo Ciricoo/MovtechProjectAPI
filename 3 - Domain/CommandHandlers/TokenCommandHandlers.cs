@@ -9,7 +9,6 @@ using System.Text;
 public class TokenCommandHandlers
 {
     string? activeToken;
-    private static readonly HashSet<string> RevokedTokens = new HashSet<string>();
     private readonly ConcurrentDictionary<string, string> _refreshTokens = new ConcurrentDictionary<string, string>();
 
     public string GenerateToken(User loginUser, out string refreshToken)
@@ -25,7 +24,7 @@ public class TokenCommandHandlers
                 new Claim(ClaimTypes.NameIdentifier, loginUser.Id.ToString()),
                 new Claim(ClaimTypes.Hash, Guid.NewGuid().ToString())
             }),
-            Expires = DateTime.UtcNow.AddMinutes(1),
+            Expires = DateTime.UtcNow.AddMinutes(30),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)// HmacSha256Signature valida a autenticidade do token
             // SymmetricSecurityKey(key) cria uma nova chave de segurança simétrica usando o valor de key.
         };
@@ -76,8 +75,6 @@ public class TokenCommandHandlers
 
                 activeToken = null;
 
-                RevokedTokens.Add(oldJwtToken);
-
                 string nameClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "unique_name")!.Value;
                 string roleClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "role")!.Value;
                 string nameIdentifierClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "nameid")!.Value;
@@ -115,7 +112,6 @@ public class TokenCommandHandlers
       
             if (expiration < DateTime.UtcNow)
             {
-                RevokedTokens.Add(token);
 
                 activeToken = null;
 
@@ -125,17 +121,8 @@ public class TokenCommandHandlers
         return false;
     }
 
-    public bool IsTokenRevoked(string token)
-    {
-        return RevokedTokens.Contains(token);
-    }
-
     public void RevokeToken(HttpContext httpContext)
     {
-        string token = httpContext.Request.Headers["Authorization"].FirstOrDefault()!.Split(" ").Last();
-
-        RevokedTokens.Add(token);
-
         activeToken = null;
     }
 

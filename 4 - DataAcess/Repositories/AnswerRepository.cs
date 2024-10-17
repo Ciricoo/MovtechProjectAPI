@@ -190,12 +190,12 @@ namespace MovtechProject.DataAcess.Repositories
                 await connection.OpenAsync();
 
                 string query = @"
-                SELECT a.*, q.texto AS QuestionText, u.nome AS Username
-                FROM respostas a
-                JOIN perguntas q ON a.idPerguntas = q.id
-                JOIN usuarios u ON a.idUsuario = u.id
-                WHERE (@questionId IS NULL OR a.idPerguntas = @questionId)
-                    AND (@userId IS NULL OR a.idUsuario = @userId)";
+                SELECT r.*, p.texto AS QuestionText, u.nome AS Username
+                FROM respostas r
+                JOIN perguntas p ON r.idPerguntas = p.id
+                JOIN usuarios u ON r.idUsuario = u.id
+                WHERE (@questionId IS NULL OR r.idPerguntas = @questionId)
+                    AND (@userId IS NULL OR r.idUsuario = @userId)";
 
                 SqlCommand command = new SqlCommand(query, connection);
                 command.Parameters.AddWithValue("@questionId", (object)questionId ?? DBNull.Value);

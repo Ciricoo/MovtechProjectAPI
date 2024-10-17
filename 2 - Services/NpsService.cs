@@ -15,5 +15,15 @@ namespace MovtechProject._2___Services
         {
             return await _npsCommandHandlers.NpsScore();
         }
+
+        public async Task<List<int>> GetAnswersAccordingNpsGrade()
+        {
+            return await _npsCommandHandlers.GetAnswersAccordingNpsGrade();
+        }
+
+        public async Task<int> GetNpsByGroupId(int idGroup)
+        {
+            return await _npsCommandHandlers.GetNpsByGroupId(idGroup);
+        }
     }
 }
